@@ -11,9 +11,7 @@ load_dotenv()
 
 client = OpenAI()
 
-
 # Function to validate if the URL is correct
-
 def validate_url(url):
     if validators.url(url):
         return True
