@@ -61,10 +61,10 @@ def main():
     st.title("Intelli Scrape")
 
     # Input for URL
-    url = st.text_input("Enter URL:")
+    url = st.text_input("Enter URL:",placeholder="https://books.toscrape.com")
 
     # Input for instructions
-    instruction = st.text_area("Enter Instructions:")
+    instruction = st.text_area("Enter Instructions:",placeholder="I need a list of all the books and their respective prices on this page.")
 
     if st.button("Scrape and Analyze"):
 
