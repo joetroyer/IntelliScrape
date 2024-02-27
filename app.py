@@ -2,25 +2,21 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 import html2text
-import os
 from openai import OpenAI
 from dotenv import load_dotenv
 import validators
 
+# Load environment variables
 load_dotenv()
 
+# Initialize OpenAI client
 client = OpenAI()
 
 # Function to validate if the URL is correct
 def validate_url(url):
-    if validators.url(url):
-        return True
-    else:
-        return False
+    return validators.url(url)
 
 # Function to scrape and convert HTML to Markdown
-
-
 def scrape_and_convert(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
@@ -32,15 +28,13 @@ def scrape_and_convert(url):
     return markdown_content
 
 # Function to interact with ChatGPT
-
-
 def chat_with_gpt(instruction, markdown_content):
     # Make a call to ChatGPT
     prompt = f"Instruction: {instruction}\n\nContent: {markdown_content}"
     result = client.chat.completions.create(
         messages=[
-            {"role":"system","content":"You are a helpful assistant."},
-            {"role":"user","content":prompt}
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
         ],
         model="gpt-3.5-turbo",
     )
@@ -48,9 +42,14 @@ def chat_with_gpt(instruction, markdown_content):
     return result.choices[0].message.content
 
 # Streamlit App
-
-
 def main():
+    # Set page title and icon
+    st.set_page_config(
+        page_title="Intelli Scrape",
+        page_icon=":robot_face:"
+    )
+
+    # Page layout with title
     st.title("Intelli Scrape")
 
     # Input for URL
@@ -64,15 +63,18 @@ def main():
         if validate_url(url):
             # Scrape and convert HTML to Markdown
             markdown_content = scrape_and_convert(url)
+
+            # Display the scraped content
             st.markdown(markdown_content)
-            # Call ChatGPT
+
+            # Call ChatGPT (commented out for now)
             # result = chat_with_gpt(instruction, markdown_content)
 
-            # # Display the result
+            # Display the ChatGPT result (commented out for now)
             # st.markdown(f"**Result:**\n\n{result}")
+
         else:
             st.error("Invalid URL. Please enter a valid URL.")
-
 
 if __name__ == "__main__":
     main()
