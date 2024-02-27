@@ -26,12 +26,15 @@ def validate_url(url):
 def scrape_and_convert(url):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
-    html_content = str(soup)
-
+    
+    # Extract content within the <body> tag
+    body_content = soup.body if soup.body else soup
+    
     # Convert HTML to Markdown
-    markdown_content = html2text.html2text(html_content)
+    markdown_content = html2text.html2text(str(body_content))
 
     return markdown_content
+
 
 
 def get_gpt_response(user_request: str, system_prompt: str = SYSTEM_PROMPT_DEFAULT, model: str = "gpt-4"):
