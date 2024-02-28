@@ -64,7 +64,7 @@ def get_gpt_response(user_request: str, system_prompt: str = SYSTEM_PROMPT_DEFAU
 def main():
 
     # Page layout with title
-    st.title("Intelli Scrape")
+    st.title("Intelli Scrape test")
 
     # Input for URL or File Upload
     url_or_file = st.radio("Choose Input Type:", ("URL", "Upload HTML File"))
