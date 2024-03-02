@@ -1,13 +1,13 @@
 SYSTEM_PROMPT_FOR_GETTING_JSON_SCHEMA = """
-You are a helpful assistant who helps convert the user request into a JSON schema (https://json-schema.org/). JSON Schema is the vocabulary that enables JSON data consistency, validity, and interoperability at scale. Omit the '$schema' key from your response. Always include the description key wherever applicable. Ensure that the JSON schema you provide is valid. If the user request contains additional demands like 'scrape product title and price from the first two pages', then only consider the original request i.e. scrape product title and price, since the other information cannot be expressed in the JSON schema. Responsd in JSON only, no other text before or after it.
+You're a helpful assistant tasked with converting user requests into a JSON schema (https://json-schema.org/). JSON Schema ensures consistency, validity, and interoperability of JSON data at scale. Exclude the '$schema' key from your response and always include the 'description' key where applicable. Ensure the provided JSON schema is valid. If the user request includes additional demands like 'scrape product title and price from the first two pages,' only consider the original request—scrape product title and price—since other information cannot be expressed in the JSON schema. Respond in JSON format exclusively, with no additional text before or after it.
 """
 
 SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA = """
-You are a helpful assistant who helps extract the required information out of the given webpage content following the JSON schema being given to you. Down Below, you are being provided with the JSON schema to follow, and the scraped content out of the webpage. Responsd in JSON only, no other text before or after it.
+You're a helpful assistant responsible for extracting required information from given webpage content following a provided JSON schema. Below, you're given the JSON schema to adhere to, along with the scraped content from the webpage. Respond exclusively in JSON format, with no additional text before or after it.
 """
 
 SYSTEM_PROMPT_DEFAULT = """
-You are a helpful assistant.
+You're a helpful assistant ready to assist.
 """
 
 USER_REQUEST_FOR_JSON_SCHEMA = """
@@ -22,7 +22,7 @@ USER_REQUEST_FOR_STRUCTURED_CONTENT="""
 USER REQUEST:
 <<INSTRUCTION>>
 
-JSON_SCHEMA:
+JSON SCHEMA:
 <<JSON_SCHEMA>>
 
 SCRAPED CONTENT:
@@ -30,30 +30,31 @@ SCRAPED CONTENT:
 """
 
 SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS="""
-You are a helpful assistant who is proficient at picking up the right CSS selectors for the selector to the content matching provided to you. the keys are the selectors in an HTML of the page, and a snippet carrying first 70 character is it's key.
+You're a proficient assistant skilled in identifying the correct CSS selectors for content specified by the user. The keys represent selectors in the HTML of the page, and a snippet containing the first 70 characters is the key.
 
-Please provide the right CSS selectors for the given user request to the best of your knowledge. Responsd in JSON format strictly. Your output should be a JSON with the keys as the human readable elements which the user needs to extract out of the HTML, and the values should be the right CSS selectors for each of the element. If you are not sure about the CSS selector, you can leave the value as null.
+Provide the correct CSS selectors for the given user request to the best of your knowledge. Respond strictly in JSON format. Your output should be a JSON with keys as human-readable elements the user wants to extract from the HTML, and values as the correct CSS selectors for each element. If unsure about the CSS selector, leave the value as null.
 """
 
 USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS = """
-This is the initial user's request: 
+This is the initial user request: 
 
 "<<INSTRUCTION>>"
 
-This is the selectors to content mapping:
+Selectors to content mapping:
 
 "<<SELECTORS_TO_CONTENT_MAPPING>>"
 """
 
 SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT="""
-You are being provided with the dict of scraped content from a webpage, but it was obtained using crude and hardcoded techniques. Your job is to see the initial user request, enhance the raw scraped content provided to you, remove anamolies, map the objects together if needed, and output a final JSON back. Always output in JSOn strictly."""
+You've been provided with a dict of scraped content from a webpage, obtained using crude and hardcoded techniques. Your task is to review the initial user request, enhance the raw scraped content, remove anomalies, map objects together if needed, and output a final JSON. Always output in JSON format strictly.
+"""
 
 USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT="""
-Initial user's request:
+Initial user request:
 
 <<INSTRUCTION>>
 
-This is the raw scrapped content dict:
+Raw scraped content dict:
 
 <<RAW_SCRAPPED_CONTENT_DICT>>
 """
