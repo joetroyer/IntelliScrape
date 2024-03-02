@@ -2,12 +2,10 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 import html2text
-from openai import OpenAI
-from dotenv import load_dotenv
 import validators
 from urllib.parse import urlsplit
-import json
-from utils.prompts import (SYSTEM_PROMPT_FOR_PAGINATION_REQUEST, USER_RUQUEST_FOR_PAGINATION_LINKS)
+
+from utils.prompts import (SYSTEM_PROMPT_FOR_PAGINATION_REQUEST, USER_REQUEST_FOR_PAGINATION_LINKS)
 from utils.get_gpt_response import get_gpt_response
 
 # Set page title and icon
@@ -111,7 +109,7 @@ def main():
             with st.expander(label="Scraped Raw Markdown Content"):
                 st.markdown(markdown_content)
 
-            user_request = USER_RUQUEST_FOR_PAGINATION_LINKS.replace("MARKDOWN_CONTENT",markdown_content)
+            user_request = USER_REQUEST_FOR_PAGINATION_LINKS.replace("MARKDOWN_CONTENT",markdown_content)
             pagination_links = get_gpt_response(user_request=user_request,system_prompt=SYSTEM_PROMPT_FOR_PAGINATION_REQUEST)
 
             if len(pagination_links):

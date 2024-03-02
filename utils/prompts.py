@@ -64,6 +64,6 @@ Your task involves examining the body content of an HTML page presented in markd
 
 Your responsibility is to scrutinize the given HTML content and determine if similar pagination exists. If so, your output should consist of a JSON object mapping the page number to its corresponding URL. In the absence of additional pages, the output should be a null JSON object."""
 
-USER_RUQUEST_FOR_PAGINATION_LINKS = """
+USER_REQUEST_FOR_PAGINATION_LINKS = """
 MARDOWN CONTENT:
 <<MARKDOWN_CONTENT>>"""
