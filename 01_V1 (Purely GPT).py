@@ -45,7 +45,6 @@ def scrape_and_convert(html_content, base_url=None):
     markdown_content = html2text.html2text(str(body_content), baseurl=base_url)
     return markdown_content
 
-
 @st.cache_data
 def get_gpt_response(user_request: str, system_prompt: str = SYSTEM_PROMPT_DEFAULT, model: str = "gpt-4-1106-preview"):
     result = client.chat.completions.create(
@@ -57,9 +56,6 @@ def get_gpt_response(user_request: str, system_prompt: str = SYSTEM_PROMPT_DEFAU
         response_format={"type": "json_object"}
     )
     return json.loads(result.choices[0].message.content.strip())
-
-# Streamlit App
-
 
 def main():
 
@@ -129,7 +125,6 @@ def main():
 
         with st.expander(label="Extracted Structured Content"):
             st.json(extracted_structured_content)
-
 
 if __name__ == "__main__":
     main()
