@@ -44,3 +44,16 @@ This is the selectors to content mapping:
 
 "<<SELECTORS_TO_CONTENT_MAPPING>>"
 """
+
+SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT="""
+You are being provided with the dict of scraped content from a webpage, but it was obtained using crude and hardcoded techniques. Your job is to see the initial user request, enhance the raw scraped content provided to you, remove anamolies, map the objects together if needed, and output a final JSON back. Always output in JSOn strictly."""
+
+USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT="""
+Initial user's request:
+
+<<INSTRUCTION>>
+
+This is the raw scrapped content dict:
+
+<<RAW_SCRAPPED_CONTENT_DICT>>
+"""

@@ -34,8 +34,11 @@ def extract_base_url(url):
 def validate_url(url):
     return validators.url(url)
 
-# Function to scrape and convert HTML to Markdown
-
+# @st.cache_data
+def scrape_body_from_url(url):
+    # Use requests to get HTML content
+    html_content_scrapped = requests.get(url).content
+    return html_content_scrapped
 
 @st.cache_data
 def scrape_and_convert(html_content, base_url=None):
@@ -81,9 +84,11 @@ def main():
                 # Validate the URL
                 if validate_url(url):
                     base_url = extract_base_url(url)
+                    html_content = scrape_body_from_url(url=url)
+                    # st.success(html_content)
                     # Scrape and convert HTML to Markdown
                     markdown_content = scrape_and_convert(
-                        url=url, base_url=base_url)
+                        html_content=html_content, base_url=base_url)
 
                 else:
                     st.error("Invalid URL. Please enter a valid URL.")

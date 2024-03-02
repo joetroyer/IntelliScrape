@@ -8,10 +8,9 @@ import validators
 from urllib.parse import urlsplit
 import json
 from bs4 import BeautifulSoup
-from utils.prompts import (SYSTEM_PROMPT_FOR_GETTING_JSON_SCHEMA,
-                           SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA, SYSTEM_PROMPT_DEFAULT, USER_REQUEST_FOR_JSON_SCHEMA, USER_REQUEST_FOR_STRUCTURED_CONTENT,
+from utils.prompts import (SYSTEM_PROMPT_DEFAULT,
                            SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS,
-                           USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS)
+                           USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS, USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT, SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
 
 # Load environment variables
 load_dotenv()
@@ -44,7 +43,7 @@ def scrape_content_using_selectors(html_content, selectors):
 
     # Iterate through each selector and extract content
     for name, selector in selectors.items():
-        st.write(f"{name} => {selector}")
+        # st.write(f"{name} => {selector}")
         elements = soup.select(selector)
         # Extract text content from each selected element
         content = [element.get_text(strip=True) for element in elements]
@@ -187,18 +186,21 @@ def main():
             user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS)
 
         with st.expander(label="Desired Selectors GPT"):
-            st.markdown(desired_selectors)
+            st.json(desired_selectors)
 
         scraped_content_after_applying_selectors = scrape_content_using_selectors(html_content=html_content_raw, selectors=desired_selectors)
 
-        st.markdown(scraped_content_after_applying_selectors)
-        # user_request_for_structured_content = USER_REQUEST_FOR_STRUCTURED_CONTENT.replace(
-        #     "<<JSON_SCHEMA>>", str(json_schema)).replace("<<INSTRUCTION>>", instruction).replace("<<SCRAPED_CONTENT>>", markdown_content)
+        with st.expander(label="Scrapped Content after applying Selectors"):
+            st.markdown(scraped_content_after_applying_selectors)
 
-        # extracted_structured_content = get_gpt_response(
-        #     user_request=user_request_for_structured_content, system_prompt=SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA)
+        user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
+            "<<INSTURCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
 
+        enhanced_scrapped_content = get_gpt_response(
+            user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
 
+        with st.expander(label="Enhanced Content"):
+            st.json(enhanced_scrapped_content)
 
 if __name__ == "__main__":
     main()
