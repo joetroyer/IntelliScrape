@@ -101,10 +101,10 @@ def scrape_body_from_html(html_content_raw):
         soup = BeautifulSoup(html_content_raw, 'html.parser')
         # Extract content within the <body> tag
         body_content = soup.body if soup.body else soup
-        return body_content
+        return html_content_raw, body_content
     except Exception as e:
         st.error(f"Error during HTML content extraction: {str(e)}")
-        return None
+        return None, None
 
 # @st.cache_data
 def scrape_body_from_url(url):
@@ -171,7 +171,6 @@ def main():
             if url_or_file == "URL":
                 if url:
                     if validate_url(url):
-                        base_url = extract_base_url(url)
                         html_content_raw, html_content = scrape_body_from_url(url=url)
                     else:
                         st.error("Invalid URL. Please enter a valid URL.")
@@ -183,7 +182,7 @@ def main():
                 if uploaded_file.name.endswith(".html") or uploaded_file.name.endswith(".htm"):
                     # Read HTML content from the uploaded file
                     html_content_raw = uploaded_file.read()
-                    html_content = scrape_body_from_html(html_content_raw=html_content_raw)
+                    html_content_raw, html_content = scrape_body_from_html(html_content_raw=html_content_raw)
                 else:
                     st.error("Please enter upload a valid HTML file.")
                     return
@@ -211,7 +210,7 @@ def main():
             scraped_content_after_applying_selectors = scrape_content_using_selectors(html_content=html_content_raw, selectors=desired_selectors)
 
             with st.expander(label="Scrapped Content after applying Selectors"):
-                st.markdown(scraped_content_after_applying_selectors)
+                st.json(scraped_content_after_applying_selectors)
 
             user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
                 "<<INSTURCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
