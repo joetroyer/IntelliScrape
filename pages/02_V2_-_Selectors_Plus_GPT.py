@@ -215,6 +215,8 @@ def main():
             user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
                 "<<INSTURCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
 
+            st.success(user_request_for_enhancing_scrapped_content)
+            
             enhanced_scrapped_content = get_gpt_response(
                 user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
 
