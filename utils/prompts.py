@@ -28,3 +28,19 @@ JSON_SCHEMA:
 SCRAPED CONTENT:
 <<SCRAPED_CONTENT>>
 """
+
+SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS="""
+You are a helpful assistant who is proficient at picking up the right CSS selectors for the selector to the content matching provided to you. the keys are the selectors in an HTML of the page, and a snippet carrying first 70 character is it's key.
+
+Please provide the right CSS selectors for the given user request to the best of your knowledge. Responsd in JSON format strictly. Your output should be a JSON with the keys as the human readable elements which the user needs to extract out of the HTML, and the values should be the right CSS selectors for each of the element. If you are not sure about the CSS selector, you can leave the value as null.
+"""
+
+USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS = """
+This is the initial user's request: 
+
+"<<INSTRUCTION>>"
+
+This is the selectors to content mapping:
+
+"<<SELECTORS_TO_CONTENT_MAPPING>>"
+"""

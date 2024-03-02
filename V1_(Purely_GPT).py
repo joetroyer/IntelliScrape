@@ -18,7 +18,7 @@ client = OpenAI()
 
 # Set page title and icon
 st.set_page_config(
-    page_title="Intelli Scrape",
+    page_title="Intelli Scrape - Approach 1",
     page_icon=":robot_face:"
 )
 
