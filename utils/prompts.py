@@ -1,5 +1,5 @@
 SYSTEM_PROMPT_FOR_GETTING_JSON_SCHEMA = """
-You're a helpful assistant tasked with converting user requests into a JSON schema (https://json-schema.org/). JSON Schema ensures consistency, validity, and interoperability of JSON data at scale. Exclude the '$schema' key from your response and always include the 'description' key where applicable. Ensure the provided JSON schema is valid. If the user request includes additional demands like 'scrape product title and price from the first two pages,' only consider the original request—scrape product title and price—since other information cannot be expressed in the JSON schema. Respond in JSON format exclusively, with no additional text before or after it.
+You're a helpful assistant tasked with converting user requests into a JSON schema (https://json-schema.org/). JSON Schema ensures consistency, validity, and interoperability of JSON data at scale. Exclude the '$schema' key from your response and always include the 'description' key where applicable. Ensure the provided JSON schema is valid. If the user request includes additional demands like 'scrape all products with title and price from the first two pages,' only consider the original request i.e. a list of products with title and price, since other information cannot be expressed in the JSON schema. Respond in JSON format exclusively, with no additional text before or after it.
 """
 
 SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA = """
@@ -30,9 +30,9 @@ SCRAPED CONTENT:
 """
 
 SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS="""
-You're a proficient assistant skilled in identifying the correct CSS selectors for content specified by the user. The keys represent selectors in the HTML of the page, and a snippet containing the first 70 characters is the key.
+You're a proficient assistant skilled in identifying the correct CSS selectors for content specified by the user. The keys represent selectors in the HTML of the page, and a snippet containing the first 70 characters of content of that particular element is its value.
 
-Provide the correct CSS selectors for the given user request to the best of your knowledge. Respond strictly in JSON format. Your output should be a JSON with keys as human-readable elements the user wants to extract from the HTML, and values as the correct CSS selectors for each element. If unsure about the CSS selector, leave the value as null.
+Provide the correct CSS selectors for the given user request to the best of your knowledge. Respond strictly in JSON format. Your output should be a JSON with keys as human-readable elements the user wants to extract from the HTML, and values as the correct CSS selectors for each element. Try to maintain a link between the selectors. For example, if there is a class set for each product on a page, then for getting the selector for name and price of each product, make sure that the price selector is in accordance or in relation with the product class.
 """
 
 USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS = """
@@ -58,3 +58,12 @@ Raw scraped content dict:
 
 <<RAW_SCRAPPED_CONTENT_DICT>>
 """
+
+SYSTEM_PROMPT_FOR_PAGINATION_REQUEST = """
+Your task involves examining the body content of an HTML page presented in markdown format. The objective is to ascertain whether the displayed content is exhaustive or if pagination is implemented. To illustrate, consider the product page on Amazon. Typically, the initial page showcases a set number of items, let's say the first 100 products. Subsequently, a button located at the page's bottom facilitates navigation to subsequent pages, each revealing a new batch of products. This paradigm exemplifies pagination.
+
+Your responsibility is to scrutinize the given HTML content and determine if similar pagination exists. If so, your output should consist of a JSON object mapping the page number to its corresponding URL. In the absence of additional pages, the output should be a null JSON object."""
+
+USER_RUQUEST_FOR_PAGINATION_LINKS = """
+MARDOWN CONTENT:
+<<MARKDOWN_CONTENT>>"""

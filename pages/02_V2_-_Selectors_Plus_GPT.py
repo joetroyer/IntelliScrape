@@ -11,18 +11,14 @@ from utils.prompts import (SYSTEM_PROMPT_DEFAULT,
                            SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS,
                            USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS,
                            USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT, SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
-
-# Load environment variables
-load_dotenv()
-
-# Initialize OpenAI client
-client = OpenAI()
+from utils.get_gpt_response import get_gpt_response
 
 # Set page title and icon
 st.set_page_config(
     page_title="Intelli Scrape - Approach 2",
     page_icon=":robot_face:"
 )
+
 
 def scrape_content_using_selectors(html_content, selectors):
     try:
@@ -45,8 +41,10 @@ def scrape_content_using_selectors(html_content, selectors):
         st.error(f"Error during content scraping: {str(e)}")
         return {}
 
+
 def truncate_text(text):
     return text[:70]
+
 
 def process_tag(tag, result_dict):
     try:
@@ -62,16 +60,19 @@ def process_tag(tag, result_dict):
                 class_name = element_attrs.get('class')
                 if class_name and tuple(class_name) not in result_dict:
                     key = ' '.join(class_name)
-                    result_dict[key] = truncate_text(element.get_text(strip=True))
+                    result_dict[key] = truncate_text(
+                        element.get_text(strip=True))
 
-            if element.name in ['img','table', 'iframe', 'input', 'script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']:
+            if element.name in ['img', 'iframe', 'input', 'script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']:
                 element.decompose()
             elif element.string:
-                element.string.replace_with(truncate_text(element.string.strip()))
+                element.string.replace_with(
+                    truncate_text(element.string.strip()))
             elif element.string and not len(element.string.strip()):
                 element.decompose()
     except Exception as e:
         st.warning(f"Error during tag processing: {str(e)}")
+
 
 def summarize_body(html_content):
     result_dict = {}
@@ -79,6 +80,8 @@ def summarize_body(html_content):
     return result_dict
 
 # @st.cache_data
+
+
 def extract_base_url(url):
     try:
         parsed_url = urlsplit(url)
@@ -89,12 +92,15 @@ def extract_base_url(url):
         return None
 
 # @st.cache_data
+
+
 def validate_url(url):
     try:
         return validators.url(url)
     except Exception as e:
         st.error(f"Error validating URL: {str(e)}")
         return False
+
 
 def scrape_body_from_html(html_content_raw):
     try:
@@ -107,6 +113,8 @@ def scrape_body_from_html(html_content_raw):
         return None, None
 
 # @st.cache_data
+
+
 def scrape_body_from_url(url):
     try:
         # Use requests to get HTML content
@@ -120,42 +128,29 @@ def scrape_body_from_url(url):
         return None, None
 
 # Function to scrape and convert HTML to Markdown
+
+
 @st.cache_data
 def scrape_and_convert(html_content, base_url=None):
     try:
         soup = BeautifulSoup(html_content, 'html.parser')
         # Extract content within the <body> tag
         body_content = soup.body if soup.body else soup
-        markdown_content = html2text.html2text(str(body_content), baseurl=base_url)
+        markdown_content = html2text.html2text(
+            str(body_content), baseurl=base_url)
         return markdown_content
     except Exception as e:
         st.error(f"Error during HTML to Markdown conversion: {str(e)}")
         return ""
 
-@st.cache_data
-def get_gpt_response(user_request: str, system_prompt: str = SYSTEM_PROMPT_DEFAULT, model: str = "gpt-4-1106-preview"):
-    try:
-        result = client.chat.completions.create(
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_request}
-            ],
-            model=model,
-            response_format={"type": "json_object"}
-        )
-        return json.loads(result.choices[0].message.content.strip())
-    except Exception as e:
-        st.error(f"Error getting GPT response: {str(e)}")
-        return {}
-
-# Streamlit App
 def main():
     try:
         # Page layout with title
         st.title("Intelli Scrape - CSS Selectors Approach")
 
         # Input for URL or File Upload
-        url_or_file = st.radio("Choose Input Type:", ("URL", "Upload HTML File"))
+        url_or_file = st.radio("Choose Input Type:",
+                               ("URL", "Upload HTML File"))
 
         if url_or_file == "URL":
             url = st.text_input(
@@ -171,7 +166,8 @@ def main():
             if url_or_file == "URL":
                 if url:
                     if validate_url(url):
-                        html_content_raw, html_content = scrape_body_from_url(url=url)
+                        html_content_raw, html_content = scrape_body_from_url(
+                            url=url)
                     else:
                         st.error("Invalid URL. Please enter a valid URL.")
                         return
@@ -182,7 +178,8 @@ def main():
                 if uploaded_file.name.endswith(".html") or uploaded_file.name.endswith(".htm"):
                     # Read HTML content from the uploaded file
                     html_content_raw = uploaded_file.read()
-                    html_content_raw, html_content = scrape_body_from_html(html_content_raw=html_content_raw)
+                    html_content_raw, html_content = scrape_body_from_html(
+                        html_content_raw=html_content_raw)
                 else:
                     st.error("Please enter upload a valid HTML file.")
                     return
@@ -207,7 +204,8 @@ def main():
             with st.expander(label="Desired Selectors GPT"):
                 st.json(desired_selectors)
 
-            scraped_content_after_applying_selectors = scrape_content_using_selectors(html_content=html_content_raw, selectors=desired_selectors)
+            scraped_content_after_applying_selectors = scrape_content_using_selectors(
+                html_content=html_content_raw, selectors=desired_selectors)
 
             with st.expander(label="Scrapped Content after applying Selectors"):
                 st.json(scraped_content_after_applying_selectors)
@@ -215,8 +213,8 @@ def main():
             user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
                 "<<INSTURCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
 
-            st.success(user_request_for_enhancing_scrapped_content)
-            
+            # st.success(user_request_for_enhancing_scrapped_content)
+
             enhanced_scrapped_content = get_gpt_response(
                 user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
 
@@ -225,6 +223,7 @@ def main():
 
     except Exception as e:
         st.error(f"An unexpected error occurred: {str(e)}")
+
 
 if __name__ == "__main__":
     main()
