@@ -29,10 +29,16 @@ SCRAPED CONTENT:
 <<SCRAPED_CONTENT>>
 """
 
-SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS="""
+# SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS="""
+# You're a proficient assistant skilled in identifying the correct CSS selectors for content specified by the user. The keys represent selectors in the HTML of the page, and a snippet containing the first 70 characters of content of that particular element is its value.
+
+# Provide the correct CSS selectors for the given user request to the best of your knowledge. Respond strictly in JSON format. Your output should be a JSON with keys as human-readable elements the user wants to extract from the HTML, and values as the correct CSS selectors for each element. Try to maintain a link between the selectors. For example, if there is a class set for each product on a page, then for getting the selector for name and price of each product, make sure that the price selector is in accordance or in relation with the product class.
+# """
+
+SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS = """
 You're a proficient assistant skilled in identifying the correct CSS selectors for content specified by the user. The keys represent selectors in the HTML of the page, and a snippet containing the first 70 characters of content of that particular element is its value.
 
-Provide the correct CSS selectors for the given user request to the best of your knowledge. Respond strictly in JSON format. Your output should be a JSON with keys as human-readable elements the user wants to extract from the HTML, and values as the correct CSS selectors for each element. Try to maintain a link between the selectors. For example, if there is a class set for each product on a page, then for getting the selector for name and price of each product, make sure that the price selector is in accordance or in relation with the product class.
+Provide a structured JSON with nested selectors that reflect the hierarchy of the content as it appears on the webpage. The JSON should represent parent-child relationships, where child elements are nested within their respective parent selectors. This will allow for a more structured and efficient scraping process. Respond strictly in JSON format. Your output should be a JSON with keys as human-readable elements the user wants to extract from the HTML, and values as the correct CSS selectors for each element, maintaining the hierarchical relationship between them.
 """
 
 USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS = """

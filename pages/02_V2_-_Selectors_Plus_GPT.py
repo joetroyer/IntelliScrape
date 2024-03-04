@@ -20,63 +20,113 @@ st.set_page_config(
 )
 
 
+# def scrape_content_using_selectors(html_content, selectors):
+#     try:
+#         # Initialize BeautifulSoup with the HTML content
+#         soup = BeautifulSoup(html_content, 'html.parser')
+
+#         # Dictionary to store scraped content
+#         scraped_content = {}
+
+#         # Iterate through each selector and extract content
+#         for name, selector in selectors.items():
+#             elements = soup.select(selector)
+#             # Extract text content from each selected element
+#             content = [element.get_text(strip=True) for element in elements]
+#             # Store the content in the dictionary with the selector as the key
+#             scraped_content[name] = content
+
+#         return scraped_content
+#     except Exception as e:
+#         st.error(f"Error during content scraping: {str(e)}")
+#         return {}
+
 def scrape_content_using_selectors(html_content, selectors):
-    try:
-        # Initialize BeautifulSoup with the HTML content
-        soup = BeautifulSoup(html_content, 'html.parser')
-
-        # Dictionary to store scraped content
-        scraped_content = {}
-
-        # Iterate through each selector and extract content
+    scraped_content = {}
+    # Initialize BeautifulSoup with the HTML content
+    soup = BeautifulSoup(html_content, 'html.parser')
+    def scrape_nested(soup, selectors, content_dict):
         for name, selector in selectors.items():
-            elements = soup.select(selector)
-            # Extract text content from each selected element
-            content = [element.get_text(strip=True) for element in elements]
-            # Store the content in the dictionary with the selector as the key
-            scraped_content[name] = content
+            if isinstance(selector, dict):  # Nested structure
+                content_dict[name] = {}
+                scrape_nested(soup, selector, content_dict[name])
+            else:
+                elements = soup.select(selector)
+                content = [element.get_text(strip=True) for element in elements]
+                content_dict[name] = content
 
-        return scraped_content
-    except Exception as e:
-        st.error(f"Error during content scraping: {str(e)}")
-        return {}
-
+    scrape_nested(soup, selectors, scraped_content)
+    return scraped_content
 
 def truncate_text(text):
     return text[:70]
 
 
-def process_tag(tag, result_dict):
-    try:
-        # Remove empty lines
-        for element in tag.find_all():
-            if element.attrs:
-                # Keep only class, id, and href attributes
-                element_attrs = {
-                    key: value
-                    for key, value in element.attrs.items()
-                    if key in ['class', 'id'] and ('nav' not in value if isinstance(value, str) else all('nav' not in v for v in value))
-                }
-                class_name = element_attrs.get('class')
-                if class_name and tuple(class_name) not in result_dict:
-                    key = ' '.join(class_name)
-                    result_dict[key] = truncate_text(
-                        element.get_text(strip=True))
+# def process_tag(tag, result_dict):
+#     try:
+#         # Remove empty lines
+#         for element in tag.find_all():
+#             if element.attrs:
+#                 # Keep only class, id, and href attributes
+#                 element_attrs = {
+#                     key: value
+#                     for key, value in element.attrs.items()
+#                     if key in ['class', 'id'] and ('nav' not in value if isinstance(value, str) else all('nav' not in v for v in value))
+#                 }
+#                 class_name = element_attrs.get('class')
+#                 if class_name and tuple(class_name) not in result_dict:
+#                     key = ' '.join(class_name)
+#                     result_dict[key] = truncate_text(
+#                         element.get_text(strip=True))
 
-            if element.name in ['img', 'iframe', 'input', 'script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']:
-                element.decompose()
-            elif element.string:
-                element.string.replace_with(
-                    truncate_text(element.string.strip()))
-            elif element.string and not len(element.string.strip()):
-                element.decompose()
-    except Exception as e:
-        st.warning(f"Error during tag processing: {str(e)}")
+#             if element.name in ['img', 'iframe', 'input', 'script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']:
+#                 element.decompose()
+#             elif element.string:
+#                 element.string.replace_with(
+#                     truncate_text(element.string.strip()))
+#             elif element.string and not len(element.string.strip()):
+#                 element.decompose()
+#     except Exception as e:
+#         st.warning(f"Error during tag processing: {str(e)}")
 
 
-def summarize_body(html_content):
+# def summarize_body(html_content):
+#     result_dict = {}
+#     process_tag(html_content, result_dict)
+#     return result_dict
+
+def summarize_body(soup):
+    # st.success("inside summarize body")
+    # st.success(html_content)
     result_dict = {}
-    process_tag(html_content, result_dict)
+    # soup = BeautifulSoup(html_content, 'html.parser')
+    # st.warning(soup)
+    def process_tag(tag, result_dict):
+        # st.success('inside process tag')
+        if tag.name not in ['script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']:
+            # Create a key for the tag if it has a class or id
+            key = None
+            if 'class' in tag.attrs:
+                key = 'class: ' + ' '.join(tag['class'])
+            elif 'id' in tag.attrs:
+                key = 'id: ' + tag['id']
+
+            # If the key exists, create a nested structure
+            if key:
+                if key not in result_dict:
+                    result_dict[key] = {'content': [], 'children': {}}
+                result_dict[key]['content'].append(truncate_text(tag.get_text(strip=True)))
+                for child in tag.children:
+                    if child.name:
+                        process_tag(child, result_dict[key]['children'])
+            else:
+                # Process children tags
+                for child in tag.children:
+                    if child.name:
+                        process_tag(child, result_dict)
+
+    # Start processing from the body tag
+    process_tag(soup.body if soup.body else soup, result_dict)
     return result_dict
 
 # @st.cache_data
@@ -196,7 +246,7 @@ def main():
                 "<<INSTRUCTION>>", instruction).replace("<<SELECTORS_TO_CONTENT_MAPPING>>", json.dumps(summarized_dict))
 
             with st.expander(label="Summarized Selectors"):
-                st.markdown(summarized_dict)
+                st.json(summarized_dict)
 
             desired_selectors = get_gpt_response(
                 user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS)
