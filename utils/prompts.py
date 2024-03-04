@@ -51,8 +51,8 @@ Selectors to content mapping:
 "<<SELECTORS_TO_CONTENT_MAPPING>>"
 """
 
-SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT="""
-You've been provided with a dict of scraped content from a webpage, obtained using crude and hardcoded techniques. Your task is to review the initial user request, enhance the raw scraped content, remove anomalies, map objects together if needed, and output a final JSON. Always output in JSON format strictly.
+SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT = """
+You've been provided with a dict of scraped content from a webpage, obtained using crude and hardcoded techniques. Your task is to review the initial user request, refine the raw scraped content, eliminate anomalies, and map objects together if necessary. Do not introduce any additional fields beyond what has been asked for. Always output in JSON format strictly.
 """
 
 USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT="""

@@ -1,45 +1,22 @@
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
+import bs4
 import html2text
-from openai import OpenAI
-from dotenv import load_dotenv
+from utils.get_gpt_response import get_gpt_response
+import re
 import validators
 from urllib.parse import urlsplit
 import json
-from utils.prompts import (SYSTEM_PROMPT_DEFAULT,
-                           SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS,
+from utils.prompts import (SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS,
                            USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS,
                            USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT, SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
-from utils.get_gpt_response import get_gpt_response
 
 # Set page title and icon
 st.set_page_config(
     page_title="Intelli Scrape - Approach 2",
     page_icon=":robot_face:"
 )
-
-
-# def scrape_content_using_selectors(html_content, selectors):
-#     try:
-#         # Initialize BeautifulSoup with the HTML content
-#         soup = BeautifulSoup(html_content, 'html.parser')
-
-#         # Dictionary to store scraped content
-#         scraped_content = {}
-
-#         # Iterate through each selector and extract content
-#         for name, selector in selectors.items():
-#             elements = soup.select(selector)
-#             # Extract text content from each selected element
-#             content = [element.get_text(strip=True) for element in elements]
-#             # Store the content in the dictionary with the selector as the key
-#             scraped_content[name] = content
-
-#         return scraped_content
-#     except Exception as e:
-#         st.error(f"Error during content scraping: {str(e)}")
-#         return {}
 
 def scrape_content_using_selectors(html_content, selectors):
     scraped_content = {}
@@ -61,76 +38,64 @@ def scrape_content_using_selectors(html_content, selectors):
 def truncate_text(text):
     return text[:70]
 
-
-# def process_tag(tag, result_dict):
-#     try:
-#         # Remove empty lines
-#         for element in tag.find_all():
-#             if element.attrs:
-#                 # Keep only class, id, and href attributes
-#                 element_attrs = {
-#                     key: value
-#                     for key, value in element.attrs.items()
-#                     if key in ['class', 'id'] and ('nav' not in value if isinstance(value, str) else all('nav' not in v for v in value))
-#                 }
-#                 class_name = element_attrs.get('class')
-#                 if class_name and tuple(class_name) not in result_dict:
-#                     key = ' '.join(class_name)
-#                     result_dict[key] = truncate_text(
-#                         element.get_text(strip=True))
-
-#             if element.name in ['img', 'iframe', 'input', 'script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']:
-#                 element.decompose()
-#             elif element.string:
-#                 element.string.replace_with(
-#                     truncate_text(element.string.strip()))
-#             elif element.string and not len(element.string.strip()):
-#                 element.decompose()
-#     except Exception as e:
-#         st.warning(f"Error during tag processing: {str(e)}")
-
-
-# def summarize_body(html_content):
-#     result_dict = {}
-#     process_tag(html_content, result_dict)
-#     return result_dict
-
 def summarize_body(soup):
-    # st.success("inside summarize body")
-    # st.success(html_content)
     result_dict = {}
-    # soup = BeautifulSoup(html_content, 'html.parser')
-    # st.warning(soup)
-    def process_tag(tag, result_dict):
-        # st.success('inside process tag')
-        if tag.name not in ['script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']:
-            # Create a key for the tag if it has a class or id
-            key = None
-            if 'class' in tag.attrs:
-                key = 'class: ' + ' '.join(tag['class'])
-            elif 'id' in tag.attrs:
-                key = 'id: ' + tag['id']
 
-            # If the key exists, create a nested structure
+    # Function to escape special characters in CSS identifiers
+    def escape_css_identifier(s):
+        return re.sub(r'([!"#$%&\'()*+,./:;<=>?@[\\]^`{|}~])', r'\\\1', s)
+
+    # Remove unwanted tags just once at the beginning
+    for tag in soup(['script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']):
+        tag.decompose()
+
+    def process_tag(tag, result_dict):
+        try:
+            key = None
+            if 'id' in tag.attrs:
+                key = f"#{escape_css_identifier(tag['id'])}"
+            elif 'class' in tag.attrs and tag['class']:
+                # Join classes with '.', escape each class identifier, and prefix with '.'
+                key = '.' + '.'.join(escape_css_identifier(cls) for cls in tag['class'])
+
             if key:
                 if key not in result_dict:
                     result_dict[key] = {'content': [], 'children': {}}
                 result_dict[key]['content'].append(truncate_text(tag.get_text(strip=True)))
                 for child in tag.children:
-                    if child.name:
+                    if isinstance(child, bs4.element.Tag):  # Ensure child is a tag
                         process_tag(child, result_dict[key]['children'])
             else:
-                # Process children tags
+                # Directly add text nodes to the content
+                text = tag.get_text(strip=True)
+                if text:
+                    result_dict.setdefault('text_nodes', []).append(truncate_text(text))
                 for child in tag.children:
-                    if child.name:
+                    if isinstance(child, bs4.element.Tag):
                         process_tag(child, result_dict)
+        except Exception as e:
+            # Log the error with the tag for debugging
+            print(f"Error processing tag {tag}: {e}")
 
-    # Start processing from the body tag
+    def clean_empty_entries(d):
+        if not isinstance(d, dict):
+            return d
+        clean_dict = {}
+        for key, value in d.items():
+            if key == 'content' and not value:  # Skip empty content lists
+                continue
+            if key == 'children':
+                value = clean_empty_entries(value)  # Recursively clean children
+                if not value:  # Skip empty children dicts
+                    continue
+            else:
+                value = clean_empty_entries(value)
+            clean_dict[key] = value
+        return clean_dict
+
     process_tag(soup.body if soup.body else soup, result_dict)
-    return result_dict
-
-# @st.cache_data
-
+    cleaned_result_dict = clean_empty_entries(result_dict)
+    return cleaned_result_dict
 
 def extract_base_url(url):
     try:
@@ -141,16 +106,12 @@ def extract_base_url(url):
         st.error(f"Error extracting base URL: {str(e)}")
         return None
 
-# @st.cache_data
-
-
 def validate_url(url):
     try:
         return validators.url(url)
     except Exception as e:
         st.error(f"Error validating URL: {str(e)}")
         return False
-
 
 def scrape_body_from_html(html_content_raw):
     try:
@@ -162,25 +123,22 @@ def scrape_body_from_html(html_content_raw):
         st.error(f"Error during HTML content extraction: {str(e)}")
         return None, None
 
-# @st.cache_data
-
-
 def scrape_body_from_url(url):
     try:
-        # Use requests to get HTML content
-        html_content_scrapped = requests.get(url).content
-        soup = BeautifulSoup(html_content_scrapped, 'html.parser')
-        # Extract content within the <body> tag
-        body_content = soup.body if soup.body else soup
-        return html_content_scrapped, body_content
+        response = requests.get(url)
+        if response.status_code == 200:
+            html_content_scrapped = response.content
+            soup = BeautifulSoup(html_content_scrapped, 'html.parser')
+            # Extract content within the <body> tag
+            body_content = soup.body if soup.body else soup
+            return html_content_scrapped, body_content
+        else:
+            st.error(f"Error scraping HTML content from URL: HTTP {response.status_code} returned")
+            return None, None
     except Exception as e:
         st.error(f"Error scraping HTML content from URL: {str(e)}")
         return None, None
-
-# Function to scrape and convert HTML to Markdown
-
-
-@st.cache_data
+    
 def scrape_and_convert(html_content, base_url=None):
     try:
         soup = BeautifulSoup(html_content, 'html.parser')
@@ -240,40 +198,39 @@ def main():
             with st.expander(label="Raw HTML Content"):
                 st.markdown(html_content)
 
-            summarized_dict = summarize_body(html_content)
+            if html_content:
+                summarized_dict = summarize_body(html_content)
 
-            user_request_for_desired_selectors = USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS.replace(
-                "<<INSTRUCTION>>", instruction).replace("<<SELECTORS_TO_CONTENT_MAPPING>>", json.dumps(summarized_dict))
+                user_request_for_desired_selectors = USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS.replace(
+                    "<<INSTRUCTION>>", instruction).replace("<<SELECTORS_TO_CONTENT_MAPPING>>", json.dumps(summarized_dict))
 
-            with st.expander(label="Summarized Selectors"):
-                st.json(summarized_dict)
+                with st.expander(label="Summarized Selectors"):
+                    st.json(summarized_dict)
 
-            desired_selectors = get_gpt_response(
-                user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS)
+                desired_selectors = get_gpt_response(
+                    user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS)
 
-            with st.expander(label="Desired Selectors GPT"):
-                st.json(desired_selectors)
+                with st.expander(label="Desired Selectors GPT"):
+                    st.json(desired_selectors)
 
-            scraped_content_after_applying_selectors = scrape_content_using_selectors(
-                html_content=html_content_raw, selectors=desired_selectors)
+                if html_content_raw:
+                    scraped_content_after_applying_selectors = scrape_content_using_selectors(
+                        html_content=html_content_raw, selectors=desired_selectors)
 
-            with st.expander(label="Scrapped Content after applying Selectors"):
-                st.json(scraped_content_after_applying_selectors)
+                    with st.expander(label="Scrapped Content after applying Selectors"):
+                        st.json(scraped_content_after_applying_selectors)
 
-            user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
-                "<<INSTURCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
+                    user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
+                        "<<INSTURCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
 
-            # st.success(user_request_for_enhancing_scrapped_content)
+                    enhanced_scrapped_content = get_gpt_response(
+                        user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
 
-            enhanced_scrapped_content = get_gpt_response(
-                user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
-
-            with st.expander(label="Enhanced Content"):
-                st.json(enhanced_scrapped_content)
+                    with st.expander(label="Enhanced Content"):
+                        st.json(enhanced_scrapped_content)
 
     except Exception as e:
         st.error(f"An unexpected error occurred: {str(e)}")
-
 
 if __name__ == "__main__":
     main()
