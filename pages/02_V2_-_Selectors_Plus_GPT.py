@@ -50,7 +50,111 @@ def scrape_content_using_selectors(html_content, selectors):
 def truncate_text(text):
     return text[:70]
 
+class ContentNode:
+    def __init__(self, tag=None, id=None, classes=None):
+        self.tag = tag
+        self.id = self.escape_css_identifier(id) if id else None
+        self.classes = [self.escape_css_identifier(cls) for cls in classes] if classes else []
+        self.content = []
+        self.children = []
+
+    def add_content(self, text):
+        truncated_text = truncate_text(text)
+        self.content.append(truncated_text)
+
+    def add_child(self, child_node):
+        self.children.append(child_node)
+
+    def escape_css_identifier(self, identifier):
+        # Escape special characters with a backslash
+        return re.sub(r'([!"#$%&\'()*+,./:;<=>?@[\\]^`{|}~])', r'\\\1', identifier)
+
+    def get_text(self):
+        return ' '.join(self.content)
+
+# Define the truncate_text function
+def truncate_text(text, max_length=70):
+    return text[:max_length] + '...' if len(text) > max_length else text
+
+# Modify the process_tag function to work with ContentNode
+def process_tag(tag, parent_node):
+    # Create a ContentNode with the tag's name, id, and classes
+    node = ContentNode(tag.name, tag.get('id'), tag.get('class'))
+    text = tag.get_text(strip=True)
+    if text:
+        node.add_content(text)
+    for child in tag.children:
+        if isinstance(child, bs4.element.Tag):
+            child_node = process_tag(child, node)
+            node.add_child(child_node)
+    return node
+
+# Function to convert the tree of ContentNodes to a nested dictionary
+def convert_to_dict(node):
+    node_dict = {
+        'tag': node.tag
+    }
+    if node.id is not None:
+        node_dict['id'] = node.id
+    if node.classes:
+        node_dict['classes'] = node.classes
+    if node.content:
+        node_dict['content'] = node.content
+    children = [convert_to_dict(child) for child in node.children]
+    if children:
+        node_dict['children'] = children
+    return node_dict
+
+def generate_ascii_tree(node, prefix=""):
+    lines = []
+
+    # Add the current node tag
+    node_repr = f"{node.tag}"
+    if node.id:
+        node_repr += f"#{node.id}"
+    if node.classes:
+        node_repr += f".{'.'.join(node.classes)}"
+    if node.content:
+        content_str = ' '.join(node.content)
+        node_repr += f" - {content_str}"
+
+    lines.append(prefix + node_repr)
+
+    # Process children with recursion
+    children_prefix = prefix + "│   "
+    last_child_prefix = prefix + "    "
+    for i, child in enumerate(node.children):
+        is_last = i == (len(node.children) - 1)
+        child_lines = generate_ascii_tree(child, children_prefix if not is_last else last_child_prefix)
+        if is_last:
+            child_lines[0] = prefix + "└── " + child_lines[0][len(prefix):]
+        else:
+            child_lines[0] = prefix + "├── " + child_lines[0][len(prefix):]
+        lines.extend(child_lines)
+
+    return lines
+
+# Function to get the ASCII tree as a string
+def get_ascii_tree_string(root_node):
+    lines = generate_ascii_tree(root_node)
+    return "\n".join(lines)
+
+# The summarize_body function using ContentNode
 def summarize_body(soup):
+    # Decompose unwanted tags
+    for tag in soup(['script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']):
+        tag.decompose()
+
+    # Start processing from the body tag or the root of the soup
+    root_node = process_tag(soup.body if soup.body else soup, None)
+    # Convert the tree of ContentNodes to a nested dictionary
+    # summarized_dict = convert_to_dict(root_node)
+    summarized_dict = get_ascii_tree_string(root_node=root_node)
+    with open('tst.txt','w', encoding='utf-8') as f:
+        f.write(summarized_dict)
+    return summarized_dict
+
+def summarize_body_old(soup):
     result_dict = {}
 
     # Function to escape special characters in CSS identifiers
@@ -234,7 +338,10 @@ def main():
                         "<<INSTRUCTION>>", instruction).replace("<<SELECTORS_TO_CONTENT_MAPPING>>", json.dumps(summarized_dict))
 
                     with st.expander(label="Summarized Selectors"):
-                        st.json(summarized_dict)
+                        # try:
+                        #     st.json(summarized_dict)
+                        # except:
+                        st.markdown(summarized_dict)
 
                     desired_selectors = get_gpt_response(
                         user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS)

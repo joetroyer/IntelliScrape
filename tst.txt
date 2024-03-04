@@ -1,0 +1,476 @@
+body#default.default - Books to ScrapeWe love being scraped!HomeAll productsBooksTravelMyster...
+├── │   header.header.container-fluid - Books to ScrapeWe love being scraped!
+│   └──     div.page_inner - Books to ScrapeWe love being scraped!
+│       └──     div.row - Books to ScrapeWe love being scraped!
+│           └──     div.col-sm-8.h1 - Books to ScrapeWe love being scraped!
+│               ├── │   a - Books to Scrape
+│               └──     small - We love being scraped!
+└──     div.container-fluid.page - HomeAll productsBooksTravelMysteryHistorical FictionSequential ArtClas...
+    └──     div.page_inner - HomeAll productsBooksTravelMysteryHistorical FictionSequential ArtClas...
+        ├── │   ul.breadcrumb - HomeAll products
+        │   ├── │   li - Home
+        │   │   └──     a - Home
+        │   └──     li.active - All products
+        └──     div.row - BooksTravelMysteryHistorical FictionSequential ArtClassicsPhilosophyRo...
+            ├── │   aside.sidebar.col-sm-4.col-md-3 - BooksTravelMysteryHistorical FictionSequential ArtClassicsPhilosophyRo...
+            │   ├── │   div#promotions_left
+            │   └──     div.side_categories - BooksTravelMysteryHistorical FictionSequential ArtClassicsPhilosophyRo...
+            │       └──     ul.nav.nav-list - BooksTravelMysteryHistorical FictionSequential ArtClassicsPhilosophyRo...
+            │           └──     li - BooksTravelMysteryHistorical FictionSequential ArtClassicsPhilosophyRo...
+            │               ├── │   a - Books
+            │               └──     ul - TravelMysteryHistorical FictionSequential ArtClassicsPhilosophyRomance...
+            │                   ├── │   li - Travel
+            │                   │   └──     a - Travel
+            │                   ├── │   li - Mystery
+            │                   │   └──     a - Mystery
+            │                   ├── │   li - Historical Fiction
+            │                   │   └──     a - Historical Fiction
+            │                   ├── │   li - Sequential Art
+            │                   │   └──     a - Sequential Art
+            │                   ├── │   li - Classics
+            │                   │   └──     a - Classics
+            │                   ├── │   li - Philosophy
+            │                   │   └──     a - Philosophy
+            │                   ├── │   li - Romance
+            │                   │   └──     a - Romance
+            │                   ├── │   li - Womens Fiction
+            │                   │   └──     a - Womens Fiction
+            │                   ├── │   li - Fiction
+            │                   │   └──     a - Fiction
+            │                   ├── │   li - Childrens
+            │                   │   └──     a - Childrens
+            │                   ├── │   li - Religion
+            │                   │   └──     a - Religion
+            │                   ├── │   li - Nonfiction
+            │                   │   └──     a - Nonfiction
+            │                   ├── │   li - Music
+            │                   │   └──     a - Music
+            │                   ├── │   li - Default
+            │                   │   └──     a - Default
+            │                   ├── │   li - Science Fiction
+            │                   │   └──     a - Science Fiction
+            │                   ├── │   li - Sports and Games
+            │                   │   └──     a - Sports and Games
+            │                   ├── │   li - Add a comment
+            │                   │   └──     a - Add a comment
+            │                   ├── │   li - Fantasy
+            │                   │   └──     a - Fantasy
+            │                   ├── │   li - New Adult
+            │                   │   └──     a - New Adult
+            │                   ├── │   li - Young Adult
+            │                   │   └──     a - Young Adult
+            │                   ├── │   li - Science
+            │                   │   └──     a - Science
+            │                   ├── │   li - Poetry
+            │                   │   └──     a - Poetry
+            │                   ├── │   li - Paranormal
+            │                   │   └──     a - Paranormal
+            │                   ├── │   li - Art
+            │                   │   └──     a - Art
+            │                   ├── │   li - Psychology
+            │                   │   └──     a - Psychology
+            │                   ├── │   li - Autobiography
+            │                   │   └──     a - Autobiography
+            │                   ├── │   li - Parenting
+            │                   │   └──     a - Parenting
+            │                   ├── │   li - Adult Fiction
+            │                   │   └──     a - Adult Fiction
+            │                   ├── │   li - Humor
+            │                   │   └──     a - Humor
+            │                   ├── │   li - Horror
+            │                   │   └──     a - Horror
+            │                   ├── │   li - History
+            │                   │   └──     a - History
+            │                   ├── │   li - Food and Drink
+            │                   │   └──     a - Food and Drink
+            │                   ├── │   li - Christian Fiction
+            │                   │   └──     a - Christian Fiction
+            │                   ├── │   li - Business
+            │                   │   └──     a - Business
+            │                   ├── │   li - Biography
+            │                   │   └──     a - Biography
+            │                   ├── │   li - Thriller
+            │                   │   └──     a - Thriller
+            │                   ├── │   li - Contemporary
+            │                   │   └──     a - Contemporary
+            │                   ├── │   li - Spirituality
+            │                   │   └──     a - Spirituality
+            │                   ├── │   li - Academic
+            │                   │   └──     a - Academic
+            │                   ├── │   li - Self Help
+            │                   │   └──     a - Self Help
+            │                   ├── │   li - Historical
+            │                   │   └──     a - Historical
+            │                   ├── │   li - Christian
+            │                   │   └──     a - Christian
+            │                   ├── │   li - Suspense
+            │                   │   └──     a - Suspense
+            │                   ├── │   li - Short Stories
+            │                   │   └──     a - Short Stories
+            │                   ├── │   li - Novels
+            │                   │   └──     a - Novels
+            │                   ├── │   li - Health
+            │                   │   └──     a - Health
+            │                   ├── │   li - Politics
+            │                   │   └──     a - Politics
+            │                   ├── │   li - Cultural
+            │                   │   └──     a - Cultural
+            │                   ├── │   li - Erotica
+            │                   │   └──     a - Erotica
+            │                   └──     li - Crime
+            │                       └──     a - Crime
+            └──     div.col-sm-8.col-md-9 - All productsWarning!This is a demo website for web scraping purposes. ...
+                ├── │   div.page-header.action - All products
+                │   └──     h1 - All products
+                ├── │   div#messages
+                ├── │   div#promotions
+                └──     section - Warning!This is a demo website for web scraping purposes. Prices and r...
+                    ├── │   div.alert.alert-warning - Warning!This is a demo website for web scraping purposes. Prices and r...
+                    │   └──     strong - Warning!
+                    └──     div - A Light in the ...£51.77In stockTipping the Velvet£53.74In stockSoumis...
+                        ├── │   ol.row - A Light in the ...£51.77In stockTipping the Velvet£53.74In stockSoumis...
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - A Light in the ...£51.77In stock
+                        │   │   └──     article.product_pod - A Light in the ...£51.77In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Three
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - A Light in the ...
+                        │   │       │   └──     a - A Light in the ...
+                        │   │       └──     div.product_price - £51.77In stock
+                        │   │           ├── │   p.price_color - £51.77
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Tipping the Velvet£53.74In stock
+                        │   │   └──     article.product_pod - Tipping the Velvet£53.74In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.One
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Tipping the Velvet
+                        │   │       │   └──     a - Tipping the Velvet
+                        │   │       └──     div.product_price - £53.74In stock
+                        │   │           ├── │   p.price_color - £53.74
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Soumission£50.10In stock
+                        │   │   └──     article.product_pod - Soumission£50.10In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.One
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Soumission
+                        │   │       │   └──     a - Soumission
+                        │   │       └──     div.product_price - £50.10In stock
+                        │   │           ├── │   p.price_color - £50.10
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Sharp Objects£47.82In stock
+                        │   │   └──     article.product_pod - Sharp Objects£47.82In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Four
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Sharp Objects
+                        │   │       │   └──     a - Sharp Objects
+                        │   │       └──     div.product_price - £47.82In stock
+                        │   │           ├── │   p.price_color - £47.82
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Sapiens: A Brief History ...£54.23In stock
+                        │   │   └──     article.product_pod - Sapiens: A Brief History ...£54.23In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Five
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Sapiens: A Brief History ...
+                        │   │       │   └──     a - Sapiens: A Brief History ...
+                        │   │       └──     div.product_price - £54.23In stock
+                        │   │           ├── │   p.price_color - £54.23
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - The Requiem Red£22.65In stock
+                        │   │   └──     article.product_pod - The Requiem Red£22.65In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.One
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - The Requiem Red
+                        │   │       │   └──     a - The Requiem Red
+                        │   │       └──     div.product_price - £22.65In stock
+                        │   │           ├── │   p.price_color - £22.65
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - The Dirty Little Secrets ...£33.34In stock
+                        │   │   └──     article.product_pod - The Dirty Little Secrets ...£33.34In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Four
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - The Dirty Little Secrets ...
+                        │   │       │   └──     a - The Dirty Little Secrets ...
+                        │   │       └──     div.product_price - £33.34In stock
+                        │   │           ├── │   p.price_color - £33.34
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - The Coming Woman: A ...£17.93In stock
+                        │   │   └──     article.product_pod - The Coming Woman: A ...£17.93In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Three
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - The Coming Woman: A ...
+                        │   │       │   └──     a - The Coming Woman: A ...
+                        │   │       └──     div.product_price - £17.93In stock
+                        │   │           ├── │   p.price_color - £17.93
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - The Boys in the ...£22.60In stock
+                        │   │   └──     article.product_pod - The Boys in the ...£22.60In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Four
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - The Boys in the ...
+                        │   │       │   └──     a - The Boys in the ...
+                        │   │       └──     div.product_price - £22.60In stock
+                        │   │           ├── │   p.price_color - £22.60
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - The Black Maria£52.15In stock
+                        │   │   └──     article.product_pod - The Black Maria£52.15In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.One
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - The Black Maria
+                        │   │       │   └──     a - The Black Maria
+                        │   │       └──     div.product_price - £52.15In stock
+                        │   │           ├── │   p.price_color - £52.15
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Starving Hearts (Triangular Trade ...£13.99In stock
+                        │   │   └──     article.product_pod - Starving Hearts (Triangular Trade ...£13.99In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Two
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Starving Hearts (Triangular Trade ...
+                        │   │       │   └──     a - Starving Hearts (Triangular Trade ...
+                        │   │       └──     div.product_price - £13.99In stock
+                        │   │           ├── │   p.price_color - £13.99
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Shakespeare's Sonnets£20.66In stock
+                        │   │   └──     article.product_pod - Shakespeare's Sonnets£20.66In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Four
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Shakespeare's Sonnets
+                        │   │       │   └──     a - Shakespeare's Sonnets
+                        │   │       └──     div.product_price - £20.66In stock
+                        │   │           ├── │   p.price_color - £20.66
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Set Me Free£17.46In stock
+                        │   │   └──     article.product_pod - Set Me Free£17.46In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Five
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Set Me Free
+                        │   │       │   └──     a - Set Me Free
+                        │   │       └──     div.product_price - £17.46In stock
+                        │   │           ├── │   p.price_color - £17.46
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Scott Pilgrim's Precious Little ...£52.29In stock
+                        │   │   └──     article.product_pod - Scott Pilgrim's Precious Little ...£52.29In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Five
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Scott Pilgrim's Precious Little ...
+                        │   │       │   └──     a - Scott Pilgrim's Precious Little ...
+                        │   │       └──     div.product_price - £52.29In stock
+                        │   │           ├── │   p.price_color - £52.29
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Rip it Up and ...£35.02In stock
+                        │   │   └──     article.product_pod - Rip it Up and ...£35.02In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Five
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Rip it Up and ...
+                        │   │       │   └──     a - Rip it Up and ...
+                        │   │       └──     div.product_price - £35.02In stock
+                        │   │           ├── │   p.price_color - £35.02
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Our Band Could Be ...£57.25In stock
+                        │   │   └──     article.product_pod - Our Band Could Be ...£57.25In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Three
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Our Band Could Be ...
+                        │   │       │   └──     a - Our Band Could Be ...
+                        │   │       └──     div.product_price - £57.25In stock
+                        │   │           ├── │   p.price_color - £57.25
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Olio£23.88In stock
+                        │   │   └──     article.product_pod - Olio£23.88In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.One
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Olio
+                        │   │       │   └──     a - Olio
+                        │   │       └──     div.product_price - £23.88In stock
+                        │   │           ├── │   p.price_color - £23.88
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Mesaerion: The Best Science ...£37.59In stock
+                        │   │   └──     article.product_pod - Mesaerion: The Best Science ...£37.59In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.One
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Mesaerion: The Best Science ...
+                        │   │       │   └──     a - Mesaerion: The Best Science ...
+                        │   │       └──     div.product_price - £37.59In stock
+                        │   │           ├── │   p.price_color - £37.59
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   ├── │   li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - Libertarianism for Beginners£51.33In stock
+                        │   │   └──     article.product_pod - Libertarianism for Beginners£51.33In stock
+                        │   │       ├── │   div.image_container
+                        │   │       │   └──     a
+                        │   │       │       └──     img.thumbnail
+                        │   │       ├── │   p.star-rating.Two
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   ├── │   i.icon-star
+                        │   │       │   └──     i.icon-star
+                        │   │       ├── │   h3 - Libertarianism for Beginners
+                        │   │       │   └──     a - Libertarianism for Beginners
+                        │   │       └──     div.product_price - £51.33In stock
+                        │   │           ├── │   p.price_color - £51.33
+                        │   │           └──     p.instock.availability - In stock
+                        │   │               └──     i.icon-ok
+                        │   └──     li.col-xs-6.col-sm-4.col-md-3.col-lg-3 - It's Only the Himalayas£45.17In stock
+                        │       └──     article.product_pod - It's Only the Himalayas£45.17In stock
+                        │           ├── │   div.image_container
+                        │           │   └──     a
+                        │           │       └──     img.thumbnail
+                        │           ├── │   p.star-rating.Two
+                        │           │   ├── │   i.icon-star
+                        │           │   ├── │   i.icon-star
+                        │           │   ├── │   i.icon-star
+                        │           │   ├── │   i.icon-star
+                        │           │   └──     i.icon-star
+                        │           ├── │   h3 - It's Only the Himalayas
+                        │           │   └──     a - It's Only the Himalayas
+                        │           └──     div.product_price - £45.17In stock
+                        │               ├── │   p.price_color - £45.17
+                        │               └──     p.instock.availability - In stock
+                        │                   └──     i.icon-ok
+                        └──     div - Page 1 of 50next
+                            └──     ul.pager - Page 1 of 50next
+                                ├── │   li.current - Page 1 of 50
+                                └──     li.next - next
+                                    └──     a - next
