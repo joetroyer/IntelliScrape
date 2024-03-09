@@ -140,7 +140,7 @@ def get_ascii_tree_string(root_node):
     return "\n".join(lines)
 
 # The summarize_body function using ContentNode
-def summarize_body(soup):
+def summarize_body_using_ascii_tree(soup):
     # Decompose unwanted tags
     for tag in soup(['script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']):
         tag.decompose()
@@ -154,7 +154,7 @@ def summarize_body(soup):
         f.write(summarized_dict)
     return summarized_dict
 
-def summarize_body_old(soup):
+def summarize_body_using_dict_method(soup):
     result_dict = {}
 
     # Function to escape special characters in CSS identifiers
@@ -301,6 +301,10 @@ def main():
         instruction = st.text_area(
             "Enter Instructions:", placeholder="I need a list of all the books and their respective prices on this page.")
 
+        # Input for URL or File Upload
+        st.session_state['summarizing_method'] = st.radio("Choose Input Type:",
+                               ("Summarize body through JSON method","Summarize body through ASCII tree method"),captions = ["Consumes less amount of tokens.", "Very token-hungry"],index=0)
+        
         if st.button("Scrape and Analyze"):
             # st.info(instruction)
             if instruction:
@@ -332,16 +336,17 @@ def main():
                     st.markdown(html_content)
 
                 if html_content:
-                    summarized_dict = summarize_body(html_content)
+
+                    with st.expander(label="Summarized Selectors"):
+                        if st.session_state.summarizing_method == "Summarize body through JSON method":
+                            summarized_dict = summarize_body_using_dict_method(html_content)
+                            st.json(summarized_dict)
+                        else:
+                            summarized_dict = summarize_body_using_ascii_tree(html_content)
+                            st.markdown(summarized_dict)
 
                     user_request_for_desired_selectors = USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS.replace(
                         "<<INSTRUCTION>>", instruction).replace("<<SELECTORS_TO_CONTENT_MAPPING>>", json.dumps(summarized_dict))
-
-                    with st.expander(label="Summarized Selectors"):
-                        # try:
-                        #     st.json(summarized_dict)
-                        # except:
-                        st.markdown(summarized_dict)
 
                     desired_selectors = get_gpt_response(
                         user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS)

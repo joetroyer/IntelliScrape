@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!-- saved from url=(0121)https://www.tripadvisor.com/static/ga/ga.html?gaMeasurementId=G-QX0Q50ZC9P&parentDomain=https%3A%2F%2Fwww.tripadvisor.com -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Google Analytics -->
+    <script async="" src="./js"></script><script>
+        var urlSearchParams = new URLSearchParams(window.location.search);
+        var gaMeasurementId = urlSearchParams.get('gaMeasurementId') || "";
+        var isDebug = urlSearchParams.get('debug') === "true";
+        var userId = urlSearchParams.get('userId');
+        // Domain from which the script is invoked
+        // Eg: webml, hare ,etc
+        var parentDomain = urlSearchParams.get('parentDomain');
+        (function(w, d, i) {
+            var f = d.getElementsByTagName('script')[0],
+                j = d.createElement('script');
+            j.async = true;
+            j.src = 'https://www.googletagmanager.com/gtag/js?id=' + i;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, gaMeasurementId);
+
+        var config = {
+            send_page_view: false,
+            debug_mode: isDebug,
+        };
+
+        if (userId) {
+            config["user_id"] = userId;
+        }
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', gaMeasurementId, config);
+
+    </script>
+    <!-- End Google Analytics -->
+</head>
+<body data-new-gr-c-s-check-loaded="14.1160.0" data-gr-ext-installed="">
+<!-- Message Communication between iframe and TA main document-->
+<script>
+    var messagePort; // ref to store message port for ga communication
+    window.addEventListener('message', onMessage);
+
+    function onGAMessage(e) {
+        var event = e.data;
+        if (event === "GAIdReq") {
+            if (!messagePort) {
+                console.error(`gtag: <IFRAME> tried to respond to GAIdReq without a messagePort active`);
+                return
+            }
+            gtag('get', gaMeasurementId, 'client_id', function(client_id) {
+                gtag('get', gaMeasurementId, 'session_id', function(session_id) {
+                    var msg = {message:'GAIdResp', response: { client_id: client_id, session_id: session_id} }
+                    // send the ids back through the message port
+                    messagePort.postMessage(msg);
+                });
+            });
+        } else {
+            gtag('event', event.event, event.data)
+        }
+    }
+
+    function onMessage(msg) {
+        if (msg.origin === parentDomain && msg.ports && msg.ports[0] && msg.data === "initGAMessagePort") {
+            messagePort = msg.ports[0];
+            messagePort.onmessage = onGAMessage;
+        }
+    }
+</script>
+
+
+<style>.tb_button {padding:1px;cursor:pointer;border-right: 1px solid #8b8b8b;border-left: 1px solid #FFF;border-bottom: 1px solid #fff;}.tb_button.hover {borer:2px outset #def; background-color: #f8f8f8 !important;}.ws_toolbar {z-index:100000} .ws_toolbar .ws_tb_btn {cursor:pointer;border:1px solid #555;padding:3px}   .tb_highlight{background-color:yellow} .tb_hide {visibility:hidden} .ws_toolbar img {padding:2px;margin:0px}</style></body><grammarly-desktop-integration data-grammarly-shadow-root="true"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
