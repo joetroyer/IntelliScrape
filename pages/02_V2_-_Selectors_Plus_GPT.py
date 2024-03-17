@@ -1,23 +1,85 @@
 import streamlit as st
 import requests
 from bs4 import BeautifulSoup
-import html2text
 from utils.get_gpt_response import get_gpt_response
 import validators
-from urllib.parse import urlsplit
 import json
 from utils.prompts import (SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS,
                            USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS,
-                           USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT, SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
-
+                           SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT,
+                           USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT,
+                           SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_XPATHS,  # Import the new XPath prompts
+                           USER_REQUEST_FOR_GETTING_THE_DESIRED_XPATHS,
+                           SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_XPATHS_CONTENT,
+                           USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_XPATHS_CONTENT)
+from lxml import etree
+from typing import Dict, Any
 from utils.selector_utils import summarize_body_using_dict_method
 from utils.ascii_utils import summarize_body_using_ascii_tree
-
+from utils.selector_utils import TAGS_TO_DECOMPOSE
 # Set page title and icon
 st.set_page_config(
     page_title="Intelli Scrape - Approach 2",
     page_icon=":robot_face:"
 )
+
+def summarize_body_using_xpath_method(html_content: str, max_content_items: int = 70) -> Dict[str, Any]:
+    result_dict = {}
+    
+    # Initialize BeautifulSoup to decompose unnecessary tags
+    soup = BeautifulSoup(html_content, 'html.parser')
+    for tag in soup(TAGS_TO_DECOMPOSE):
+        tag.decompose()
+    
+    # Only process the <body> tag, if it exists
+    body = soup.body if soup.body else soup
+    html_content = str(body)
+    
+    # Parse the HTML content and create an ElementTree object
+    tree = etree.HTML(html_content)
+    tree = etree.ElementTree(tree)
+
+    def process_element(element, result_dict):
+        xpath = tree.getpath(element)
+        if xpath not in result_dict:
+            result_dict[xpath] = {'content': [], 'children': {}}
+        text = (element.text or '').strip()
+        if text:
+            # Truncate the text if it's longer than max_content_items
+            truncated_text = text[:max_content_items] + '...' if len(text) > max_content_items else text
+            result_dict[xpath]['content'].append(truncated_text)
+        for child in element:
+            process_element(child, result_dict[xpath]['children'])
+
+    process_element(tree.getroot(), result_dict)
+
+    def clean_dict(d):
+        if isinstance(d, dict):
+            cleaned = {k: clean_dict(v) for k, v in d.items() if v}
+            if 'content' in cleaned:
+                # Filter out empty strings and truncate the list to the first two items
+                cleaned['content'] = [item for item in cleaned['content'] if item.strip()][:max_content_items]
+            if 'children' in cleaned and not cleaned['children']:
+                del cleaned['children']  # Remove empty children dicts
+            return cleaned if cleaned else None  # Remove empty dicts
+        return d
+
+    cleaned_result_dict = clean_dict(result_dict)
+    return cleaned_result_dict if cleaned_result_dict else {}
+
+def scrape_content_using_xpath(html_content, xpath_dict):
+    scraped_content = {}
+    tree = etree.HTML(html_content)
+
+    for label, xpath in xpath_dict.items():
+        try:
+            elements = tree.xpath(xpath)
+            # Extract text content from each element found by the XPath
+            scraped_content[label] = [element.text for element in elements if element.text]
+        except Exception as e:
+            print(f"Error processing XPath {xpath} for label {label}: {e}")
+
+    return scraped_content
 
 def scrape_content_using_selectors(html_content, selectors):
     scraped_content = {}
@@ -47,30 +109,6 @@ def scrape_content_using_selectors(html_content, selectors):
 
     scrape_nested(soup, selectors, scraped_content)
     return scraped_content
-# Function to convert the tree of ContentNodes to a nested dictionary
-def convert_to_dict(node):
-    node_dict = {
-        'tag': node.tag
-    }
-    if node.id is not None:
-        node_dict['id'] = node.id
-    if node.classes:
-        node_dict['classes'] = node.classes
-    if node.content:
-        node_dict['content'] = node.content
-    children = [convert_to_dict(child) for child in node.children]
-    if children:
-        node_dict['children'] = children
-    return node_dict
-
-def extract_base_url(url):
-    try:
-        parsed_url = urlsplit(url)
-        base_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
-        return base_url
-    except Exception as e:
-        st.error(f"Error extracting base URL: {str(e)}")
-        return None
 
 def validate_url(url):
     try:
@@ -104,18 +142,6 @@ def scrape_body_from_url(url):
     except Exception as e:
         st.error(f"Error scraping HTML content from URL: {str(e)}")
         return None, None
-    
-def scrape_and_convert(html_content, base_url=None):
-    try:
-        soup = BeautifulSoup(html_content, 'html.parser')
-        # Extract content within the <body> tag
-        body_content = soup.body if soup.body else soup
-        markdown_content = html2text.html2text(
-            str(body_content), baseurl=base_url)
-        return markdown_content
-    except Exception as e:
-        st.error(f"Error during HTML to Markdown conversion: {str(e)}")
-        return ""
 
 def main():
     try:
@@ -138,7 +164,7 @@ def main():
 
         # Input for URL or File Upload
         st.session_state['summarizing_method'] = st.radio("Choose Input Type:",
-                               ("Summarize body through JSON method","Summarize body through ASCII tree method"),captions = ["Consumes less amount of tokens.", "Very token-hungry"],index=0)
+                               ("Summarize body through JSON method","Summarize body through XML method","Summarize body through ASCII tree method"),captions = ["Consumes less amount of tokens.", "Very token-hungry"],index=0)
         
         if st.button("Scrape and Analyze"):
             # st.info(instruction)
@@ -176,36 +202,66 @@ def main():
                         if st.session_state.summarizing_method == "Summarize body through JSON method":
                             summarized_dict = summarize_body_using_dict_method(html_content)
                             st.json(summarized_dict)
+                        elif st.session_state.summarizing_method == "Summarize body through XML method":
+                            summarized_dict = summarize_body_using_xpath_method(html_content=str(html_content))
+                            st.json(summarized_dict)
                         else:
                             summarized_dict = summarize_body_using_ascii_tree(html_content)
                             st.markdown(summarized_dict)
 
-                    user_request_for_desired_selectors = USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS.replace(
-                        "<<INSTRUCTION>>", instruction).replace("<<SELECTORS_TO_CONTENT_MAPPING>>", json.dumps(summarized_dict))
+                    if st.session_state['summarizing_method'] == "Summarize body through XML method":
+                        # Use XPath prompts
+                        user_request_for_desired_selectors = USER_REQUEST_FOR_GETTING_THE_DESIRED_XPATHS.replace(
+                            "<<INSTRUCTION>>", instruction).replace("<<XPATHS_TO_CONTENT_MAPPING>>", json.dumps(summarized_dict))
 
-                    desired_selectors = get_gpt_response(
-                        user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS)
+                        desired_selectors = get_gpt_response(
+                            user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_XPATHS)
+                        
+                        with st.expander(label="Desired Selectors GPT"):
+                            st.json(desired_selectors)
 
-                    with st.expander(label="Desired Selectors GPT"):
-                        st.json(desired_selectors)
+                        if html_content_raw:
+                            scraped_content_after_applying_selectors = scrape_content_using_xpath(
+                                html_content=html_content_raw, xpath_dict=desired_selectors)
 
-                    if html_content_raw:
-                        scraped_content_after_applying_selectors = scrape_content_using_selectors(
-                            html_content=html_content_raw, selectors=desired_selectors)
+                            with st.expander(label="Scrapped Content after applying Selectors"):
+                                st.json(scraped_content_after_applying_selectors)
 
-                        with st.expander(label="Scrapped Content after applying Selectors"):
-                            st.json(scraped_content_after_applying_selectors)
+                            user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_XPATHS_CONTENT.replace(
+                                "<<INSTRUCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
 
-                        user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
-                            "<<INSTRUCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
+                            enhanced_scrapped_content = get_gpt_response(
+                                user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_XPATHS_CONTENT)
+                            
+                            with st.expander(label="Enhanced Content"):
+                                st.json(enhanced_scrapped_content)
+                    else:
+                        user_request_for_desired_selectors = USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS.replace(
+                            "<<INSTRUCTION>>", instruction).replace("<<SELECTORS_TO_CONTENT_MAPPING>>", json.dumps(summarized_dict))
 
-                        # st.warning(f"prompt: {user_request_for_enhancing_scrapped_content}")
+                        desired_selectors = get_gpt_response(
+                            user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS)
 
-                        enhanced_scrapped_content = get_gpt_response(
-                            user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
+                        with st.expander(label="Desired Selectors GPT"):
+                            st.json(desired_selectors)
 
-                        with st.expander(label="Enhanced Content"):
-                            st.json(enhanced_scrapped_content)
+                        if html_content_raw:
+                            scraped_content_after_applying_selectors = scrape_content_using_selectors(
+                                html_content=html_content_raw, selectors=desired_selectors)
+
+                            with st.expander(label="Scrapped Content after applying Selectors"):
+                                st.json(scraped_content_after_applying_selectors)
+
+                            user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
+                                "<<INSTRUCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
+
+                            # st.warning(f"prompt: {user_request_for_enhancing_scrapped_content}")
+
+                            enhanced_scrapped_content = get_gpt_response(
+                                user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
+
+                            with st.expander(label="Enhanced Content"):
+                                st.json(enhanced_scrapped_content)
 
             else:
                 st.error("Please enter instructions.")

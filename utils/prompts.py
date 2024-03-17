@@ -73,3 +73,35 @@ Your responsibility is to scrutinize the given HTML content and determine if sim
 USER_REQUEST_FOR_PAGINATION_LINKS = """
 MARDOWN CONTENT:
 <<MARKDOWN_CONTENT>>"""
+
+SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_XPATHS = """
+You're a proficient assistant skilled in identifying the correct XPaths for content specified by the user. The user is looking for a JSON where keys are human-readable labels for the content they wish to extract from a webpage, and the values are the most relevant XPaths that can be used to retrieve that content.
+
+For example, if the user wants to extract book titles and prices, your response should be a JSON object with keys like 'book_titles' and 'prices', and the values should be the single most relevant XPath that points to the book titles and prices on the webpage, respectively.
+
+Respond strictly in JSON format. Your output should be a JSON with keys as user-friendly labels for the elements the user wants to extract, and values as the single most relevant XPath for each element.
+"""
+
+USER_REQUEST_FOR_GETTING_THE_DESIRED_XPATHS = """
+This is the initial user request: 
+
+"<<INSTRUCTION>>"
+
+XPaths to content mapping:
+
+"<<XPATHS_TO_CONTENT_MAPPING>>"
+"""
+
+SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_XPATHS_CONTENT = """
+You've been provided with a dict of scraped content from a webpage, obtained using XPaths. Your task is to review the initial user request, refine the raw scraped content, eliminate anomalies, and map objects together if necessary. Do not introduce any additional fields beyond what has been asked for. Always output in JSON format strictly.
+"""
+
+USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_XPATHS_CONTENT = """
+Initial user request:
+
+<<INSTRUCTION>>
+
+Raw scraped content dict:
+
+<<RAW_SCRAPPED_CONTENT_DICT>>
+"""
