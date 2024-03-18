@@ -180,7 +180,7 @@ def main():
 
         # Input for URL or File Upload
         st.session_state['summarizing_method'] = st.radio("Choose Input Type:",
-                               ("Summarize body through JSON method","Summarize body through XML method","Summarize body through ASCII tree method"),captions = ["Consumes less amount of tokens.", "", "Very token-hungry"],index=0)
+                               ("Summarize body through CSS Selectors method","Summarize body through XML Xpaths method","Summarize body through ASCII tree method"),captions = ["Consumes less amount of tokens.", "", "Very token-hungry"],index=0)
         
         if st.button("Scrape and Analyze"):
             # st.info(instruction)
