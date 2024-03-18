@@ -79,7 +79,7 @@ You're a proficient assistant skilled in identifying the correct XPaths for cont
 
 For example, if the user wants to extract book titles and prices, your response should be a JSON object with keys like 'book_titles' and 'prices', and the values should be the single most relevant XPath that points to the book titles and prices on the webpage, respectively.
 
-Respond strictly in JSON format. Your output should be a JSON with keys as user-friendly labels for the elements the user wants to extract, and values as the single most relevant XPath for each element.
+Respond strictly in JSON format. Your output should be a JSON with keys as user-friendly labels for the elements the user wants to extract, and values as the single most relevant XPath for each element. Make sure that the Xpath is valid and an accurate one. Don't make it complex unless really required.
 """
 
 USER_REQUEST_FOR_GETTING_THE_DESIRED_XPATHS = """

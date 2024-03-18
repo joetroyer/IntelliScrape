@@ -9,7 +9,7 @@ from urllib.parse import urlsplit
 from utils.prompts import (SYSTEM_PROMPT_FOR_GETTING_JSON_SCHEMA,
                            SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA, SYSTEM_PROMPT_DEFAULT, USER_REQUEST_FOR_JSON_SCHEMA, USER_REQUEST_FOR_STRUCTURED_CONTENT)
 from utils.get_gpt_response import get_gpt_response
-
+from utils.ensure_limit import reduce_string_to_token_limit
 # Set page title and icon
 st.set_page_config(
     page_title="Intelli Scrape - Approach 1",
@@ -109,6 +109,8 @@ def main():
 
             with st.expander(label="Scraped Raw Markdown Content"):
                 st.markdown(markdown_content)
+
+            markdown_content = reduce_string_to_token_limit(markdown_content)
 
             user_request_json_schema = USER_REQUEST_FOR_JSON_SCHEMA.replace(
                 "<<INSTRUCTION>>", instruction).replace("<<SCRAPED_CONTENT>>", markdown_content)
