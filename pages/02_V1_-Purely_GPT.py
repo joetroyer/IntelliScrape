@@ -1,15 +1,13 @@
 import streamlit as st
-import requests
 from bs4 import BeautifulSoup
 import html2text
-from openai import OpenAI
-from dotenv import load_dotenv
 import validators
 from urllib.parse import urlsplit
 from utils.prompts import (SYSTEM_PROMPT_FOR_GETTING_JSON_SCHEMA,
                            SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA, SYSTEM_PROMPT_DEFAULT, USER_REQUEST_FOR_JSON_SCHEMA, USER_REQUEST_FOR_STRUCTURED_CONTENT)
 from utils.get_gpt_response import get_gpt_response
 from utils.ensure_limit import reduce_string_to_token_limit
+from utils.scrape_html_using_scrapenetwork import scrape_body_from_url
 # Set page title and icon
 st.set_page_config(
     page_title="Intelli Scrape - Approach 1",
@@ -34,16 +32,6 @@ def validate_url(url):
         st.error(f"Error validating URL: {str(e)}")
         return False
 
-# @st.cache_data
-def scrape_body_from_url(url):
-    try:
-        # Use requests to get HTML content
-        html_content_scrapped = requests.get(url).content
-        return html_content_scrapped
-    except Exception as e:
-        st.error(f"Error scraping HTML content from URL: {str(e)}")
-        return None
-
 @st.cache_data
 def scrape_and_convert(html_content, base_url=None):
     try:
@@ -55,7 +43,6 @@ def scrape_and_convert(html_content, base_url=None):
     except Exception as e:
         st.error(f"Error during HTML to Markdown conversion: {str(e)}")
         return ""
-
 
 def main():
     try:

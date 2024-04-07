@@ -1,5 +1,4 @@
 import streamlit as st
-import requests
 from bs4 import BeautifulSoup
 from utils.get_gpt_response import get_gpt_response
 import validators
@@ -19,10 +18,11 @@ from utils.ascii_utils import summarize_body_using_ascii_tree
 from utils.selector_utils import TAGS_TO_DECOMPOSE
 from utils.ensure_limit import reduce_string_to_token_limit
 import re
+from utils.scrape_html_using_scrapenetwork import scrape_body_from_url as scrape_util
 
 # Set page title and icon
 st.set_page_config(
-    page_title="Intelli Scrape - Approach 2",
+    page_title="Intelli Scrape - Approach 3",
     page_icon=":robot_face:"
 )
 
@@ -145,16 +145,11 @@ def scrape_body_from_html(html_content_raw):
 
 def scrape_body_from_url(url):
     try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            html_content_scrapped = response.content
-            soup = BeautifulSoup(html_content_scrapped, 'html.parser')
-            # Extract content within the <body> tag
-            body_content = soup.body if soup.body else soup
-            return html_content_scrapped, body_content
-        else:
-            st.error(f"Error scraping HTML content from URL: HTTP {response.status_code} returned")
-            return None, None
+        html_content_scrapped = scrape_util(url=url)
+        soup = BeautifulSoup(html_content_scrapped, 'html.parser')
+        # Extract content within the <body> tag
+        body_content = soup.body if soup.body else soup
+        return html_content_scrapped, body_content
     except Exception as e:
         st.error(f"Error scraping HTML content from URL: {str(e)}")
         return None, None

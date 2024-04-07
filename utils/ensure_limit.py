@@ -1,7 +1,7 @@
 import tiktoken
 import streamlit as st
 
-def reduce_string_to_token_limit(input_string: str, token_limit: int = 100000, chunk_size: int = 1000, verbose: bool = True) -> str:
+def reduce_string_to_token_limit(input_string: str, token_limit: int = 100000, chunk_size: int = 1000, verbose: bool = False) -> str:
     try:
         if verbose:
             st.info(f"Received input string of length: {len(input_string)}")

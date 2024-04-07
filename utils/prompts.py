@@ -105,3 +105,34 @@ Raw scraped content dict:
 
 <<RAW_SCRAPPED_CONTENT_DICT>>
 """
+
+SYSTEM_PROMPT_FOR_SELECTING_APPROACH_DYNAMICALLY="""
+As a smart assistant, your primary task is to analyze the provided URL and user instructions to determine the most appropriate approach for scraping the desired content. The available approaches are as follows:
+
+1. **Approach 1: Citation-based Scraping**
+   - This approach is suitable when the URL contains information such as business name, address, phone number, or website URL on business directories.
+   - It should be selected when the user's desired content is not repeated on the page, and the data is available in a specific, single location.
+
+2. **Approach 2: Repeated Content Scraping**
+   - This approach is recommended for e-commerce sites, booking sites, or real estate sites where the content is repeated, such as a list of products, hotels, or properties.
+   - It should be selected when the user's desired content is available in a repeatable format, like a list or grid.
+
+To determine the appropriate approach, you should:
+- Assess the URL to identify if it belongs to a business directory, e-commerce site, booking site, or real estate site.
+- Analyze the user's instructions to understand the type of content they need (single instance vs. repeated content).
+- Select the approach that best fits the URL and user's requirements.
+
+The output should be a JSON object with the selected approach as the value, like this:
+```json
+{
+  "approach": "1"
+}
+```
+
+The value for the "approach" key should be an integer, either "1" or "2", representing the selected approach."""
+
+
+USER_REQUEST_FOR_SELECTING_APPROACH_DYNAMICALLY="""
+- URL: <<URL>>
+- User Request: <<INSTRUCTION>>
+"""
