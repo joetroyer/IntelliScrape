@@ -7,6 +7,8 @@ from utils.get_gpt_response import get_gpt_response
 from utils.purely_gpt_utils import process_using_approach_1
 from utils.scrape_html_using_scrapenetwork import scrape_body_from_url
 from utils.css_selector_utils import process_using_approach_2
+from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 
 # Set page title and icon
 st.set_page_config(
@@ -30,6 +32,32 @@ def select_approach_dynamically(url, instruction):
         st.success(f"Selected Approach: CSS Selectors")
     
     return response
+
+def get_base_url(url):
+    parsed_url = urlparse(url)
+    return f"{parsed_url.scheme}://{parsed_url.netloc}"
+
+def get_top_2_urls_out_of_the_html(html_content):
+    soup = BeautifulSoup(html_content, 'html.parser')
+    links = soup.find_all('a', href=True)
+    
+    url_tally = {}
+    
+    for link in links:
+        url = link['href']
+        if url.startswith("http://") or url.startswith("https://"):
+            base_url = get_base_url(url)
+            if base_url in url_tally:
+                url_tally[base_url] += 1
+            else:
+                url_tally[base_url] = 1
+    
+    sorted_urls = sorted(url_tally.items(), key=lambda x: x[1], reverse=True)
+    top_two_urls = ""
+    for i, (base_url, count) in enumerate(sorted_urls[:2], 1):
+        top_two_urls += f"{i}. {base_url}: {count} times\n"
+    
+    return top_two_urls
 
 @st.cache_data
 def extract_base_url(url):
@@ -96,7 +124,11 @@ def main():
                 return
 
             if html_content:
-                approach = select_approach_dynamically(url=url,instruction=instruction)
+                if not url:
+                    urls = get_top_2_urls_out_of_the_html(html_content=html_content)
+                    approach = select_approach_dynamically(url=urls, instruction=instruction)
+                else:
+                    approach = select_approach_dynamically(url=url,instruction=instruction)
                 if approach == 1:
                     process_using_approach_1(raw_html_content=html_content,instruction=instruction,base_url=base_url)
                 else:
