@@ -210,17 +210,17 @@ def main():
                 if html_content:
 
                     with st.expander(label="Summarized Selectors"):
-                        if st.session_state.summarizing_method == "Summarize body through JSON method":
+                        if st.session_state.summarizing_method == "Summarize body through CSS Selectors method":
                             summarized_dict = summarize_body_using_dict_method(html_content)
                             st.json(summarized_dict)
-                        elif st.session_state.summarizing_method == "Summarize body through XML method":
+                        elif st.session_state.summarizing_method == "Summarize body through XML Xpaths method":
                             summarized_dict = summarize_body_using_xpath_method(html_content=str(html_content))
                             st.json(summarized_dict)
                         else:
                             summarized_dict = summarize_body_using_ascii_tree(html_content)
                             st.markdown(summarized_dict)
 
-                    if st.session_state['summarizing_method'] == "Summarize body through XML method":
+                    if st.session_state['summarizing_method'] == "Summarize body through XML Xpaths method":
                         # Use XPath prompts
                         reduced_dict = reduce_string_to_token_limit(json.dumps(summarized_dict))
                         user_request_for_desired_selectors = USER_REQUEST_FOR_GETTING_THE_DESIRED_XPATHS.replace(

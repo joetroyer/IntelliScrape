@@ -31,7 +31,7 @@ def select_approach_dynamically(url, instruction):
     else: 
         st.success(f"Selected Approach: CSS Selectors")
     
-    return response
+    return approach
 
 def get_base_url(url):
     parsed_url = urlparse(url)
@@ -87,6 +87,7 @@ def main():
 
         url = None
         instruction = None
+        base_url = None  # Initialize base_url here
 
         if url_or_file == "URL":
             url = st.text_input(
@@ -105,7 +106,6 @@ def main():
                     if validate_url(url):
                         base_url = extract_base_url(url)
                         html_content = scrape_body_from_url(url=url)
-
                     else:
                         st.error("Invalid URL. Please enter a valid URL.")
                         return
@@ -130,7 +130,10 @@ def main():
                 else:
                     approach = select_approach_dynamically(url=url,instruction=instruction)
                 if approach == 1:
-                    process_using_approach_1(raw_html_content=html_content,instruction=instruction,base_url=base_url)
+                    if base_url:
+                        process_using_approach_1(raw_html_content=html_content,instruction=instruction,base_url=base_url)
+                    else:
+                        process_using_approach_1(raw_html_content=html_content,instruction=instruction,base_url=None)
                 else:
                     process_using_approach_2(raw_html_content=html_content,instruction=instruction)
                     

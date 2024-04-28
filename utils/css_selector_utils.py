@@ -94,14 +94,14 @@ def process_using_approach_2(raw_html_content, instruction):
             with st.expander(label="Scrapped Content after applying Selectors"):
                 st.json(scraped_content_after_applying_selectors)
 
-            # # Enhance the scraped content
-            # user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
-            #     "<<INSTRUCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
-            # enhanced_scrapped_content = get_gpt_response(
-            #     user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
+            # Enhance the scraped content
+            user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT.replace(
+                "<<INSTRUCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
+            enhanced_scrapped_content = get_gpt_response(
+                user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
 
-            # with st.expander(label="Enhanced Content"):
-            #     st.json(enhanced_scrapped_content)
+            with st.expander(label="Enhanced Content"):
+                st.json(enhanced_scrapped_content)
 
     except Exception as e:
         st.error(f"An unexpected error occurred: {str(e)}")
