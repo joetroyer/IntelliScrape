@@ -1,6 +1,7 @@
 import streamlit as st
 from bs4 import BeautifulSoup
-from utils.get_gpt_response import get_gpt_response
+from utils.enhance_instructions import enhance_user_instructions
+from utils.get_gpt_response_json import get_gpt_response_json
 import validators
 import json
 from utils.prompts import (SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS,
@@ -180,6 +181,8 @@ def main():
         if st.button("Scrape and Analyze"):
             # st.info(instruction)
             if instruction:
+                instruction = enhance_user_instructions(instruction)
+                st.info(f"Enhanced user instructions:\n\n{instruction}")
                 if url_or_file == "URL":
                     if url:
                         if validate_url(url):
@@ -226,7 +229,7 @@ def main():
                         user_request_for_desired_selectors = USER_REQUEST_FOR_GETTING_THE_DESIRED_XPATHS.replace(
                             "<<INSTRUCTION>>", instruction).replace("<<XPATHS_TO_CONTENT_MAPPING>>", reduced_dict)
 
-                        desired_selectors = get_gpt_response(
+                        desired_selectors = get_gpt_response_json(
                             user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_XPATHS)
                         
                         with st.expander(label="Desired Selectors GPT"):
@@ -242,7 +245,7 @@ def main():
                             user_request_for_enhancing_scrapped_content = USER_REQUEST_FOR_ENHANCING_THE_SCRAPPED_XPATHS_CONTENT.replace(
                                 "<<INSTRUCTION>>", instruction).replace("<<RAW_SCRAPPED_CONTENT_DICT>>", json.dumps(scraped_content_after_applying_selectors))
 
-                            enhanced_scrapped_content = get_gpt_response(
+                            enhanced_scrapped_content = get_gpt_response_json(
                                 user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_XPATHS_CONTENT)
                             
                             with st.expander(label="Enhanced Content"):
@@ -252,7 +255,7 @@ def main():
                         user_request_for_desired_selectors = USER_REQUEST_FOR_GETTING_THE_DESIRED_SELECTORS.replace(
                             "<<INSTRUCTION>>", instruction).replace("<<SELECTORS_TO_CONTENT_MAPPING>>", reduced_dict)
 
-                        desired_selectors = get_gpt_response(
+                        desired_selectors = get_gpt_response_json(
                             user_request=user_request_for_desired_selectors, system_prompt=SYSTEM_PROMPT_FOR_GETTING_THE_DESIRED_SELECTORS)
 
                         with st.expander(label="Desired Selectors GPT"):
@@ -270,7 +273,7 @@ def main():
 
                             # st.warning(f"prompt: {user_request_for_enhancing_scrapped_content}")
 
-                            enhanced_scrapped_content = get_gpt_response(
+                            enhanced_scrapped_content = get_gpt_response_json(
                                 user_request=user_request_for_enhancing_scrapped_content, system_prompt=SYSTEM_PROMPT_FOR_ENHANCING_THE_SCRAPPED_SELECTORS_CONTENT)
 
                             with st.expander(label="Enhanced Content"):

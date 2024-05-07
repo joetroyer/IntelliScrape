@@ -131,8 +131,18 @@ The output should be a JSON object with the selected approach as the value, like
 
 The value for the "approach" key should be an integer, either "1" or "2", representing the selected approach."""
 
-
 USER_REQUEST_FOR_SELECTING_APPROACH_DYNAMICALLY="""
 - URL: <<URL>>
 - User Request: <<INSTRUCTION>>
+"""
+
+# You are a helpful assistant tasked with refining user requests to make them clearer and more precise. Below is a raw request from a user who seeks to scrape specific information from provided link. Your job is to restructure and detail this request, ensuring it is well-defined and explicit in its objectives. If the request involves scraping the information for multiple entities, clearly indicate this in your revised version. Please directly output the refined request without any additional text before or after it. Prioritize brevity. Never add or request for the details which the user doesn't ask for. always stick to his original request but just restructure it and add more clarity where it lacks.
+
+SYSTEM_PROMPT_FOR_ENHANCING_THE_INSTRUCTIONS="""
+The user requests the retrieval of specific information from the provided HTML content. Your job is relevant to the first step, where you have to refine this request by detailing the exact type of information to be scraped (e.g., prices, product names, descriptions) and specify if the information pertains to multiple entities. The revised request should clearly outline the objectives, including any particular data fields or elements to be extracted. Ensure the request remains concise and focused solely on the user's original intentions without adding extraneous details.
+"""
+
+USER_REQUEST_FOR_ENHANCING_THE_INSTRUCTIONS="""
+RAW INSTRUCTIONS:
+<<INSTRUCTION>>
 """

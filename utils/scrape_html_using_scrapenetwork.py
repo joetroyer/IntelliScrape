@@ -16,8 +16,10 @@ def scrape_body_from_url(url):
             'js_render': 'true'
         }
         response = requests.get(api_url, params=params)
+        st.error(response)
         response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
         html_content_scrapped = response.content
+        st.success(html_content_scrapped)
         return html_content_scrapped
     except Exception as e:
         st.error(f"Error scraping HTML content from URL: {str(e)}")

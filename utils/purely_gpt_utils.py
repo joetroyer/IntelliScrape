@@ -3,9 +3,9 @@ from bs4 import BeautifulSoup
 import html2text
 from utils.ensure_limit import reduce_string_to_token_limit
 from utils.prompts import (USER_REQUEST_FOR_JSON_SCHEMA, SYSTEM_PROMPT_FOR_GETTING_JSON_SCHEMA, USER_REQUEST_FOR_STRUCTURED_CONTENT, SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA)
-from utils.get_gpt_response import get_gpt_response
+from utils.get_gpt_response_json import get_gpt_response_json
 
-@st.cache_data
+# @st.cache_data
 def scrape_and_convert(html_content, base_url=None):
     try:
         soup = BeautifulSoup(html_content, 'html.parser')
@@ -30,7 +30,7 @@ def process_using_approach_1(raw_html_content, instruction, base_url=None):
         # Generate JSON schema based on user instruction
         user_request_json_schema = USER_REQUEST_FOR_JSON_SCHEMA.replace(
             "<<INSTRUCTION>>", instruction).replace("<<SCRAPED_CONTENT>>", markdown_content)
-        json_schema = get_gpt_response(
+        json_schema = get_gpt_response_json(
             user_request=user_request_json_schema, system_prompt=SYSTEM_PROMPT_FOR_GETTING_JSON_SCHEMA)
 
         with st.expander(label="JSON Schema"):
@@ -39,7 +39,7 @@ def process_using_approach_1(raw_html_content, instruction, base_url=None):
         # Extract structured content based on JSON schema
         user_request_for_structured_content = USER_REQUEST_FOR_STRUCTURED_CONTENT.replace(
             "<<JSON_SCHEMA>>", str(json_schema)).replace("<<INSTRUCTION>>", instruction).replace("<<SCRAPED_CONTENT>>", markdown_content)
-        extracted_structured_content = get_gpt_response(
+        extracted_structured_content = get_gpt_response_json(
             user_request=user_request_for_structured_content, system_prompt=SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA)
 
         with st.expander(label="Extracted Structured Content"):

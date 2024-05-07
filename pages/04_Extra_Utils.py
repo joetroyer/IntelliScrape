@@ -6,7 +6,7 @@ import validators
 from urllib.parse import urlsplit
 
 from utils.prompts import (SYSTEM_PROMPT_FOR_PAGINATION_REQUEST, USER_REQUEST_FOR_PAGINATION_LINKS)
-from utils.get_gpt_response import get_gpt_response
+from utils.get_gpt_response_json import get_gpt_response_json
 
 # Set page title and icon
 st.set_page_config(
@@ -34,7 +34,7 @@ def scrape_body_from_url(url):
         st.error(f"Error scraping HTML content from URL: {str(e)}")
         return None
 
-@st.cache_data
+# @st.cache_data
 def scrape_and_convert(html_content, base_url=None):
     try:
         soup = BeautifulSoup(html_content, 'html.parser')
@@ -110,7 +110,7 @@ def main():
                 st.markdown(markdown_content)
 
             user_request = USER_REQUEST_FOR_PAGINATION_LINKS.replace("MARKDOWN_CONTENT",markdown_content)
-            pagination_links = get_gpt_response(user_request=user_request,system_prompt=SYSTEM_PROMPT_FOR_PAGINATION_REQUEST)
+            pagination_links = get_gpt_response_json(user_request=user_request,system_prompt=SYSTEM_PROMPT_FOR_PAGINATION_REQUEST)
 
             if len(pagination_links):
                 with st.expander(label="Pagination Links"):

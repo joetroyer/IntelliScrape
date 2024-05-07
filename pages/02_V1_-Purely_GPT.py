@@ -3,9 +3,10 @@ from bs4 import BeautifulSoup
 import html2text
 import validators
 from urllib.parse import urlsplit
+from utils.enhance_instructions import enhance_user_instructions
 from utils.prompts import (SYSTEM_PROMPT_FOR_GETTING_JSON_SCHEMA,
                            SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA, SYSTEM_PROMPT_DEFAULT, USER_REQUEST_FOR_JSON_SCHEMA, USER_REQUEST_FOR_STRUCTURED_CONTENT)
-from utils.get_gpt_response import get_gpt_response
+from utils.get_gpt_response_json import get_gpt_response_json
 from utils.ensure_limit import reduce_string_to_token_limit
 from utils.scrape_html_using_scrapenetwork import scrape_body_from_url
 # Set page title and icon
@@ -32,7 +33,7 @@ def validate_url(url):
         st.error(f"Error validating URL: {str(e)}")
         return False
 
-@st.cache_data
+# @st.cache_data
 def scrape_and_convert(html_content, base_url=None):
     try:
         soup = BeautifulSoup(html_content, 'html.parser')
@@ -63,6 +64,8 @@ def main():
             "Enter Instructions:", placeholder="I need a list of all the books and their respective prices on this page.")
 
         if st.button("Scrape and Analyze"):
+            instruction = enhance_user_instructions(instruction)
+            st.info(f"Enhanced user instructions:\n\n{instruction}")
             if url_or_file == "URL":
                 if url:
                     # Validate the URL
@@ -102,7 +105,7 @@ def main():
             user_request_json_schema = USER_REQUEST_FOR_JSON_SCHEMA.replace(
                 "<<INSTRUCTION>>", instruction).replace("<<SCRAPED_CONTENT>>", markdown_content)
 
-            json_schema = get_gpt_response(
+            json_schema = get_gpt_response_json(
                 user_request=user_request_json_schema, system_prompt=SYSTEM_PROMPT_FOR_GETTING_JSON_SCHEMA)
 
             with st.expander(label="JSON Schema"):
@@ -111,7 +114,7 @@ def main():
             user_request_for_structured_content = USER_REQUEST_FOR_STRUCTURED_CONTENT.replace(
                 "<<JSON_SCHEMA>>", str(json_schema)).replace("<<INSTRUCTION>>", instruction).replace("<<SCRAPED_CONTENT>>", markdown_content)
 
-            extracted_structured_content = get_gpt_response(
+            extracted_structured_content = get_gpt_response_json(
                 user_request=user_request_for_structured_content, system_prompt=SYSTEM_PROMPT_FOR_DATA_EXTRACTION_ACCORDING_TO_THE_JSON_SCHEMA)
 
             with st.expander(label="Extracted Structured Content"):

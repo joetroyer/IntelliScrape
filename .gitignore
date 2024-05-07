@@ -9,6 +9,8 @@ __pycache__/
 *.ipynb
 
 summarized_outputs
+newtests
+sample
 
 # Distribution / packaging
 .Python

@@ -3,10 +3,11 @@ import validators
 from urllib.parse import urlsplit
 from utils.prompts import (SYSTEM_PROMPT_FOR_SELECTING_APPROACH_DYNAMICALLY,
                            USER_REQUEST_FOR_SELECTING_APPROACH_DYNAMICALLY)
-from utils.get_gpt_response import get_gpt_response
+from utils.get_gpt_response_json import get_gpt_response_json
 from utils.purely_gpt_utils import process_using_approach_1
 from utils.scrape_html_using_scrapenetwork import scrape_body_from_url
 from utils.css_selector_utils import process_using_approach_2
+from utils.enhance_instructions import enhance_user_instructions
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
@@ -22,7 +23,7 @@ def select_approach_dynamically(url, instruction):
         "<<INSTRUCTION>>", instruction).replace("<<URL>>", url)
         st.write("Calling GPT")
 
-        response = get_gpt_response(
+        response = get_gpt_response_json(
             user_request=user_request, system_prompt=SYSTEM_PROMPT_FOR_SELECTING_APPROACH_DYNAMICALLY)
         approach = int(response['approach'])
 
@@ -100,12 +101,20 @@ def main():
             "Enter Instructions:", placeholder="I need a list of all the books and their respective prices on this page.")
 
         if st.button("Scrape and Analyze"):
+            with st.spinner("Enhancing user instructions"):
+                instruction = enhance_user_instructions(instruction)
+            st.info(f"Enhanced user instructions:\n\n{instruction}")
+            # st.warning("Hello world")
+            st.info(url_or_file)
             if url_or_file == "URL":
+                st.warning(url)
                 if url:
                     # Validate the URL
                     if validate_url(url):
+                        st.warning("url validated")
                         base_url = extract_base_url(url)
                         html_content = scrape_body_from_url(url=url)
+                        st.info(f"html content scrapped: {html_content}")
                     else:
                         st.error("Invalid URL. Please enter a valid URL.")
                         return
@@ -122,7 +131,7 @@ def main():
             else:
                 st.error("Please enter a URL or upload an HTML file.")
                 return
-
+            
             if html_content:
                 if not url:
                     urls = get_top_2_urls_out_of_the_html(html_content=html_content)
