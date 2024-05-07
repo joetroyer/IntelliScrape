@@ -7,7 +7,7 @@ from typing import Dict, Any
 CSS_ESCAPE_PATTERN = re.compile(r'([!"#$%&\'()*+,./:;<=>?@[\\]^`{|}~])')
 
 # Define the tags to decompose as a constant at the module level
-TAGS_TO_DECOMPOSE = ['script', 'style', 'meta', 'link', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']
+TAGS_TO_DECOMPOSE = ['script', 'style', 'meta', 'comment', 'head', 'footer', 'nav', 'form', 'noscript']
 
 # Define the truncate_text function
 def truncate_text(text: str, max_length: int = 70) -> str:
