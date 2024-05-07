@@ -33,7 +33,7 @@ def scrape_body_from_html(html_content_raw):
         return None, None
 
 
-def scrape_content_using_selectors(html_content, selectors):
+def scrape_content_using_selectors(html_content, selectors): 
     scraped_content = {}
     # Initialize BeautifulSoup with the HTML content
     soup = BeautifulSoup(html_content, 'html.parser')
